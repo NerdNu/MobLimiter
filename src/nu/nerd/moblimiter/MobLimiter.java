@@ -59,20 +59,28 @@ public class MobLimiter extends JavaPlugin implements Listener {
 
     @EventHandler
     public void onChunkUnload(final ChunkUnloadEvent e) {
-        Map<String, Integer> count = new HashMap<String, Integer>();
-        for( Entity entity : e.getChunk().getEntities()) {
-            if((entity instanceof Animals) || (entity instanceof Monster)) {
-                if(count.get(entity.getType().name()) == null) {
-                    count.put(entity.getType().name(), 0);
-                }
-                int mbcount = count.get(entity.getType().name());
-                count.put(entity.getType().name(), ++mbcount);
-                if(count.get(entity.getType().name()) != null) {
-                    if(mbcount > count.get(entity.getType().name())) {
-                        entity.remove();
+        // Not sure if infinite loop, need to look at code more and test this, pls don't run
+        e.setCancelled(true);
+	getServer().getScheduler().scheduleAsyncDelayedTask(this, new Runnable() {
+		@Override
+		public void run() {
+                    Map<String, Integer> count = new HashMap<String, Integer>();
+                    for( Entity entity : e.getChunk().getEntities()) {
+                        if((entity instanceof Animals) || (entity instanceof Monster)) {
+                            if(count.get(entity.getType().name()) == null) {
+                                count.put(entity.getType().name(), 0);
+                            }
+                            int mbcount = count.get(entity.getType().name());
+                            count.put(entity.getType().name(), ++mbcount);
+                            if(count.get(entity.getType().name()) != null) {
+                                if(mbcount > count.get(entity.getType().name())) {
+                                    entity.remove();
+                                }
+                            }
+                        }
                     }
+                    e.getChunk().unload(true, true); // save | safe
                 }
-            }
-        }
+	});
     }
 }
