@@ -17,6 +17,7 @@ public class MobLimiter extends JavaPlugin implements Listener {
     @Override
     public void onEnable() {
         this.getConfig().options().copyDefaults(true);
+        limits = loadConfig();
         saveConfig();
         getServer().getPluginManager().registerEvents(this, this);
         getLogger().info(getDescription().getName() + " " + getDescription().getVersion() + " enabled.");
