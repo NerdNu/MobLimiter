@@ -63,12 +63,11 @@ public class MobLimiter extends JavaPlugin implements Listener {
 //        this.getLogger().info("Chunk unloading, removing mobs");
 //        this.getLogger().info(this.limits.toString());
         e.setCancelled(true);
-        this.getServer().getScheduler().scheduleAsyncDelayedTask(this, new Runnable() {
-            private final Entity[] entlist = e.getChunk().getEntities();
-
+        this.getServer().getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
             @Override
             public void run() {
-                synchronized(entlist) {
+                synchronized(e.getWorld()) {
+                    Entity[] entlist = e.getChunk().getEntities();
                     Map<String, Integer> count = new HashMap<String, Integer>();
                     for (Entity entity : entlist) {
                         if ((entity instanceof Animals) || (entity instanceof Monster)) {
