@@ -2,10 +2,10 @@ package nu.nerd.moblimiter;
 
 import java.util.HashMap;
 import java.util.Map;
-import org.bukkit.Chunk;
 import org.bukkit.entity.Animals;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Monster;
+import org.bukkit.entity.Sheep;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.world.ChunkUnloadEvent;
@@ -34,7 +34,9 @@ public class MobLimiter extends JavaPlugin implements Listener {
 //       All Mobs we care about
 //       Blaze, CaveSpider, Creeper, Enderman, Giant, PigZombie, Silverfish, Skeleton, Spider, Zombie
 //       Chicken, Cow, MushroomCow, Ocelot, Pig, Sheep, Wolf
-
+//       WHITE, ORANGE, MAGENTA, LIGHT_BLUE, YELLOW, LIME, PINK, GRAY, SILVER, CYAN, PURPLE, BLUE, BROWN, GREEN, RED, BLACK
+        
+        
         Map<String, Integer> limconf = new HashMap<String, Integer>();
 //       Animals
         limconf.put("chicken", getConfig().getInt("limit.chicken", 4));
@@ -42,8 +44,24 @@ public class MobLimiter extends JavaPlugin implements Listener {
         limconf.put("mushroom_cow", getConfig().getInt("limit.mushroomcow", 4));
         limconf.put("ocelot", getConfig().getInt("limit.ocelot", 4));
         limconf.put("pig", getConfig().getInt("limit.pig", 4));
-        limconf.put("sheep", getConfig().getInt("limit.sheep", 12));
         limconf.put("wolf", getConfig().getInt("limit.wolf", 4));
+//       Sheeeeeeepppp
+        limconf.put("sheepwhite", getConfig().getInt("limit.sheep.white", 4));
+        limconf.put("sheeporange", getConfig().getInt("limit.sheep.orange", 2));
+        limconf.put("sheepmagenta", getConfig().getInt("limit.sheep.magenta", 2));
+        limconf.put("sheeplight_blue", getConfig().getInt("limit.sheep.light_blue", 2));
+        limconf.put("sheepyellow", getConfig().getInt("limit.sheep.yellow", 2));
+        limconf.put("sheeplime", getConfig().getInt("limit.sheep.lime", 2));
+        limconf.put("sheeppink", getConfig().getInt("limit.sheep.pink", 2));
+        limconf.put("sheepgray", getConfig().getInt("limit.sheep.gray", 2));
+        limconf.put("sheepsilver", getConfig().getInt("limit.sheep.silver", 2));
+        limconf.put("sheepcyan", getConfig().getInt("limit.sheep.cyan", 2));
+        limconf.put("sheeppurple", getConfig().getInt("limit.sheep.purple", 2));
+        limconf.put("sheepblue", getConfig().getInt("limit.sheep.blue", 2));
+        limconf.put("sheepbrown", getConfig().getInt("limit.sheep.brown", 2));
+        limconf.put("sheepgreen", getConfig().getInt("limit.sheep.green", 2));
+        limconf.put("sheepred", getConfig().getInt("limit.sheep.red", 2));
+        limconf.put("sheepblack", getConfig().getInt("limit.sheep.black", 2));
 //       Monsters
         limconf.put("blaze", getConfig().getInt("limit.blaze", 4));
         limconf.put("cave_spider", getConfig().getInt("limit.cavespider", 4));
@@ -71,15 +89,19 @@ public class MobLimiter extends JavaPlugin implements Listener {
                     Map<String, Integer> count = new HashMap<String, Integer>();
                     for (Entity entity : entlist) {
                         if ((entity instanceof Animals) || (entity instanceof Monster)) {
-                            if (count.get(entity.getType().name()) == null) {
-                                count.put(entity.getType().name(), 0);
+                            String mobname = entity.getType().name().toLowerCase();
+                            if (entity instanceof Sheep) {
+                                mobname += ((Sheep)entity).getColor().name().toLowerCase();
                             }
-                            int mbcount = count.get(entity.getType().name());
-                            count.put(entity.getType().name(), ++mbcount);
-                            if (limits.get(entity.getType().name().toLowerCase()) != null) {
-                                if (mbcount > limits.get(entity.getType().name().toLowerCase())) {
+                            if (count.get(mobname) == null) {
+                                count.put(mobname, 0);
+                            }
+                            int mbcount = count.get(mobname);
+                            count.put(mobname, ++mbcount);
+                            if (limits.get(mobname) != null) {
+                                if (mbcount > limits.get(mobname)) {
                                     entity.remove();
-                                    System.out.println("Removed entity " + entity.getType().name());
+                                    System.out.println("Removed entity " + mobname);
                                 }
                             }
                         }
