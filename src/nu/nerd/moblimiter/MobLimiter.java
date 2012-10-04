@@ -2,6 +2,7 @@ package nu.nerd.moblimiter;
 
 import java.util.HashMap;
 import java.util.Map;
+import org.bukkit.Chunk;
 import org.bukkit.entity.Animals;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Monster;
@@ -9,6 +10,7 @@ import org.bukkit.entity.Sheep;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.world.ChunkUnloadEvent;
+import org.bukkit.event.world.WorldUnloadEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class MobLimiter extends JavaPlugin implements Listener {
@@ -21,13 +23,17 @@ public class MobLimiter extends JavaPlugin implements Listener {
         this.limits = loadConfig();
         this.saveConfig();
         this.getServer().getPluginManager().registerEvents(this, this);
-        this.getLogger().info(this.getDescription().getName() + " " + this.getDescription().getVersion() + " enabled.");
     }
 
     @Override
     public void onDisable() {
         this.getServer().getScheduler().cancelTasks(this);
-        this.getLogger().info(getDescription().getName() + " " + getDescription().getVersion() + " disabled.");
+        for (Chunk c : getServer().getWorlds().get(0).getLoadedChunks()) {
+            int remd = removeMobs(c);
+            if (remd > 0) {
+                System.out.println("Removed mobs: " + remd);
+            }
+        }
     }
 
     public Map<String, Integer> loadConfig() {
@@ -35,8 +41,8 @@ public class MobLimiter extends JavaPlugin implements Listener {
 //       Blaze, CaveSpider, Creeper, Enderman, Giant, PigZombie, Silverfish, Skeleton, Spider, Zombie
 //       Chicken, Cow, MushroomCow, Ocelot, Pig, Sheep, Wolf
 //       WHITE, ORANGE, MAGENTA, LIGHT_BLUE, YELLOW, LIME, PINK, GRAY, SILVER, CYAN, PURPLE, BLUE, BROWN, GREEN, RED, BLACK
-        
-        
+
+
         Map<String, Integer> limconf = new HashMap<String, Integer>();
 //       Animals
         limconf.put("chicken", getConfig().getInt("limit.chicken", 4));
@@ -77,6 +83,11 @@ public class MobLimiter extends JavaPlugin implements Listener {
     }
 
     @EventHandler
+    public void onWorldUnload(final WorldUnloadEvent e) {
+        System.out.println(">>>>>>> World Unload Event");
+    }
+
+    @EventHandler
     public void onChunkUnload(final ChunkUnloadEvent e) {
 //        this.getLogger().info("Chunk unloading, removing mobs");
 //        this.getLogger().info(this.limits.toString());
@@ -84,31 +95,41 @@ public class MobLimiter extends JavaPlugin implements Listener {
         this.getServer().getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
             @Override
             public void run() {
-                synchronized(e.getWorld()) {
-                    Entity[] entlist = e.getChunk().getEntities();
-                    Map<String, Integer> count = new HashMap<String, Integer>();
-                    for (Entity entity : entlist) {
-                        if ((entity instanceof Animals) || (entity instanceof Monster)) {
-                            String mobname = entity.getType().name().toLowerCase();
-                            if (entity instanceof Sheep) {
-                                mobname += ((Sheep)entity).getColor().name().toLowerCase();
-                            }
-                            if (count.get(mobname) == null) {
-                                count.put(mobname, 0);
-                            }
-                            int mbcount = count.get(mobname);
-                            count.put(mobname, ++mbcount);
-                            if (limits.get(mobname) != null) {
-                                if (mbcount > limits.get(mobname)) {
-                                    entity.remove();
-                                    System.out.println("Removed entity " + mobname);
-                                }
-                            }
-                        }
+                synchronized (e.getWorld()) {
+                    int remd = removeMobs(e.getChunk());
+                    if (remd > 0) {
+                        System.out.println("Removed mobs: " + remd);
                     }
                     e.getChunk().unload(true, true); // (save, safe)
                 }
             }
         });
+    }
+
+    public int removeMobs(Chunk c) {
+        Entity[] entlist = c.getEntities();
+        int totalCount = 0;
+        Map<String, Integer> count = new HashMap<String, Integer>();
+        for (Entity entity : entlist) {
+            if ((entity instanceof Animals) || (entity instanceof Monster)) {
+                String mobname = entity.getType().name().toLowerCase();
+                if (entity instanceof Sheep) {
+                    mobname += ((Sheep) entity).getColor().name().toLowerCase();
+                }
+                if (count.get(mobname) == null) {
+                    count.put(mobname, 0);
+                }
+                int mbcount = count.get(mobname);
+                count.put(mobname, ++mbcount);
+                if (limits.get(mobname) != null) {
+                    if (mbcount > limits.get(mobname)) {
+                        totalCount++;
+                        //entity.remove();
+                        //System.out.println("Removed entity " + mobname);
+                    }
+                }
+            }
+        }
+        return totalCount;
     }
 }
