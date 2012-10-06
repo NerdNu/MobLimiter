@@ -1,6 +1,5 @@
 package nu.nerd.moblimiter;
 
-import org.bukkit.Chunk;
 import org.bukkit.craftbukkit.CraftChunk;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.HumanEntity;
@@ -24,14 +23,6 @@ public class MobLimiter extends JavaPlugin implements Listener {
         saveConfig();
         getLogger().info("MobLimiter max set to: " + limit);
         getServer().getPluginManager().registerEvents(this, this);
-        getLogger().info(getDescription().getName() + " " + getDescription().getVersion() + " enabled.");
-    }
-
-    @Override
-    public void onDisable() {
-        getLogger().info("MobLimiter max set to: " + limit);
-        getServer().getScheduler().cancelTasks(this);
-        getLogger().info(getDescription().getName() + " " + getDescription().getVersion() + " disabled.");
     }
 
     @EventHandler
@@ -67,11 +58,9 @@ public class MobLimiter extends JavaPlugin implements Listener {
         }
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onCreatureSpawn(final CreatureSpawnEvent e) {
         // Allow or deny creature spawn events based on the population of its chunk
-        if (e.isCancelled())
-            return;
         int count = 0;
         final Entity entity = e.getEntity();
         // Count limitable entities in chunk directly
@@ -83,7 +72,7 @@ public class MobLimiter extends JavaPlugin implements Listener {
                 }
             }
         }
-        if (count >= limit) {
+        if (count > limit) {
             // Prevent spawning
             e.setCancelled(true);
             return;
