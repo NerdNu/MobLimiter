@@ -5,10 +5,12 @@ import java.util.Map;
 import org.bukkit.Chunk;
 import org.bukkit.entity.Animals;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.Ageable;
 import org.bukkit.entity.Monster;
 import org.bukkit.entity.Sheep;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.world.ChunkUnloadEvent;
 import org.bukkit.event.world.WorldUnloadEvent;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -104,6 +106,13 @@ public class MobLimiter extends JavaPlugin implements Listener {
                 }
             }
         });
+    }
+    
+    @EventHandler
+    public void onCreatureSpawnEvent(final CreatureSpawnEvent e) {
+        if(e.getEntity() instanceof Ageable) {
+            ((Ageable) e.getEntity()).setBreed(true);
+        }
     }
 
     public int removeMobs(Chunk c) {
