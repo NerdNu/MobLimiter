@@ -9,6 +9,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Monster;
 import org.bukkit.entity.Sheep;
+import org.bukkit.entity.Tameable;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -20,13 +21,21 @@ import org.bukkit.plugin.java.JavaPlugin;
 public class MobLimiter extends JavaPlugin implements Listener {
 
     public Map<String, Integer> limits = new HashMap<String, Integer>();
+    public int ageCapBaby = -1;
+    public int ageCapBreed = -1;
 
     @Override
     public void onEnable() {
         this.getConfig().options().copyDefaults(true);
         for (Map.Entry<String, Object> entry : this.getConfig().getValues(false).entrySet()) {
-            if(entry.getKey() != null && entry.getValue() != null && entry.getValue() instanceof Integer) {
-                limits.put(entry.getKey(), (Integer)entry.getValue());
+            if (entry.getKey() != null && entry.getValue() != null && entry.getValue() instanceof Integer) {
+                if (entry.getKey().equals("agecapbaby")) {
+                    ageCapBaby = (Integer) entry.getValue();
+                } else if (entry.getKey().equals("agecapbreed")) {
+                    ageCapBreed = (Integer) entry.getValue();
+                } else {
+                    limits.put(entry.getKey(), (Integer) entry.getValue());
+                }
             }
         }
         this.saveConfig();
@@ -47,15 +56,25 @@ public class MobLimiter extends JavaPlugin implements Listener {
 
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
     public void onCreatureSpawnEvent(final CreatureSpawnEvent e) {
-        if (e.getEntity() instanceof Animals) {
-            if (e.getSpawnReason() == SpawnReason.BREEDING) {
-                ((Animals) e.getEntity()).setBreed(true);
-                for (Entity en : e.getEntity().getNearbyEntities(4, 4, 4)) {
-                    if (en instanceof Animals) {
-                        ((Animals) en).setBreed(true);
-                    }
+        if (e.getSpawnReason() == SpawnReason.BREEDING && isFarmAnimal(e.getEntity())) {
+            applyAgeCap((Animals) e.getEntity());
+            for (Entity en : e.getEntity().getNearbyEntities(4, 4, 4)) {
+                if (isFarmAnimal(en)) {
+                    applyAgeCap((Animals) en);
                 }
             }
+        }
+    }
+
+    public boolean isFarmAnimal(Entity en) {
+        return (en instanceof Animals) && !(en instanceof Tameable);
+    }
+
+    public void applyAgeCap(Animals en) {
+        if (ageCapBaby >= 0 && !en.isAdult()) {
+            en.setAge(Math.max(en.getAge(), -ageCapBaby));
+        } else if (ageCapBreed >= 0 && en.isAdult()) {
+            en.setAge(Math.min(en.getAge(), ageCapBreed));
         }
     }
 
