@@ -3,7 +3,7 @@ package nu.nerd.moblimiter;
 import java.util.HashMap;
 import java.util.Map;
 import org.bukkit.Chunk;
-import org.bukkit.craftbukkit.v1_4_6.CraftChunk;
+import org.bukkit.craftbukkit.v1_5_R2.CraftChunk;
 import org.bukkit.entity.Animals;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -79,14 +79,14 @@ public class MobLimiter extends JavaPlugin implements Listener {
     }
 
     public void removeMobs(Chunk c) {
-        net.minecraft.server.v1_4_6.Chunk chunk = ((CraftChunk) c).getHandle();
+        net.minecraft.server.v1_5_R2.Chunk chunk = ((CraftChunk) c).getHandle();
         Map<String, Integer> count = new HashMap<String, Integer>();
         for (int i = 0; i < 16; i++) {
             for (int j = 0; j < chunk.entitySlices[i].size(); j++) {
                 Object obj = chunk.entitySlices[i].get(j);
                 Entity entity = null;
-                if (obj instanceof net.minecraft.server.v1_4_6.Entity) {
-                    entity = ((net.minecraft.server.v1_4_6.Entity) obj).getBukkitEntity();
+                if (obj instanceof net.minecraft.server.v1_5_R2.Entity) {
+                    entity = ((net.minecraft.server.v1_5_R2.Entity) obj).getBukkitEntity();
                 } else {
                     entity = (Entity) obj;
                 }
