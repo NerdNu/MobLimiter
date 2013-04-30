@@ -34,7 +34,8 @@ public class MobLimiter extends JavaPlugin implements Listener {
                 } else if (entry.getKey().equals("agecapbreed")) {
                     ageCapBreed = (Integer) entry.getValue();
                 } else {
-                    limits.put(entry.getKey(), (Integer) entry.getValue());
+                	if (((Integer) entry.getValue()) >= 0)
+                		limits.put(entry.getKey(), (Integer) entry.getValue());
                 }
             }
         }
