@@ -6,9 +6,9 @@ import java.util.Map;
 import org.bukkit.Chunk;
 import org.bukkit.craftbukkit.v1_5_R2.CraftChunk;
 import org.bukkit.entity.Animals;
+import org.bukkit.entity.Creature;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Monster;
 import org.bukkit.entity.Sheep;
 import org.bukkit.entity.Tameable;
 import org.bukkit.event.EventHandler;
@@ -93,7 +93,7 @@ public class MobLimiter extends JavaPlugin implements Listener {
 					entity = (Entity) obj;
 				}
 				if (entity != null) {
-					if ((entity instanceof Animals) || (entity instanceof Monster)) {
+					if (entity instanceof Creature) {
 						String mobname = entity.getType().name().toLowerCase();
 
 						if (count.get(mobname) == null) {
