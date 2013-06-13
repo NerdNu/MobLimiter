@@ -1,9 +1,0 @@
-name: MobLimiter
-version: ${project.version}
-description: ${project.description}
-
-author: Travis Watkins
-website: ${project.url}
-
-main: nu.nerd.moblimiter.MobLimiter
-
