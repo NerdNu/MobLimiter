@@ -1,6 +1,5 @@
 package nu.nerd.moblimiter;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -38,14 +37,14 @@ public class MobLimiter extends JavaPlugin implements Listener {
 
 	public int ageCapBaby = -1;
 	public int ageCapBreed = -1;
-	
+
 	public int numberControlRadiusSquared;
 	public int maxOneType;
 	public int maxAnyType;
-	
+
 	public String breedLimitOneAnimalMessage;
 	public String breedLimitAllAnimalsMessage;
-	
+
 	@Override
 	public void onEnable() {
 		this.getConfig().options().copyDefaults(true);
@@ -61,15 +60,15 @@ public class MobLimiter extends JavaPlugin implements Listener {
 				}
 			}
 		}
-		
+
 		numberControlRadiusSquared = this.getConfig().getInt("AnimalLimit.RadiusSquared", 40000);
 		maxOneType = this.getConfig().getInt("AnimalLimit.MaxOneType", 80);
 		maxAnyType = this.getConfig().getInt("AnimalLimit.MaxAllTypes", 320);
-		
-		breedLimitOneAnimalMessage = this.getConfig().getString("Messages.BreedLimitOneAnimal", "You cannot breed this <Animal> because there is more than <AnimalTypeLimit> <AnimalPlural> in <MaxAnimalRadius> block radius around you.");
-		breedLimitAllAnimalsMessage = this.getConfig().getString("Messages.BreedLimitAllAnimals", "You cannot breed this <Animal> because you cannot have more than <AnimalsLimit> animals in <MaxAnimalRadius> blocks radius around you.");
 
-		
+		breedLimitOneAnimalMessage = this.getConfig().getString("Messages.BreedLimitOneAnimal", "Admin of this server is so lazy he forgot to set config!");
+		breedLimitAllAnimalsMessage = this.getConfig().getString("Messages.BreedLimitAllAnimals", "Admin of this server is so lazy he forgot to set config!");
+
+
 		this.saveConfig();
 
 		animalPlurals.put(EntityType.CHICKEN, "Chickens");
@@ -107,7 +106,7 @@ public class MobLimiter extends JavaPlugin implements Listener {
 				e.setCancelled(true);
 				return;
 			}
-			
+
 			if (e.getSpawnReason() == SpawnReason.BREEDING) {
 				applyAgeCap((Animals) e.getEntity());
 				for (Entity en : e.getEntity().getNearbyEntities(4, 4, 4)) {
@@ -133,13 +132,13 @@ public class MobLimiter extends JavaPlugin implements Listener {
 		Entity ent = e.getRightClicked();
 		if (ent == null || !isFarmAnimal(ent))
 			return;
-		
+
 		Player player = e.getPlayer();
 		ItemStack hand = player.getItemInHand();
-		
+
 		if (hand == null || !isBreedingFood(ent.getType(), hand.getType()))
 			return;
-		
+
 		int breedPossibility = canBreed(ent.getLocation(), ent.getType());
 		if (breedPossibility != 0)
 		{
@@ -147,27 +146,27 @@ public class MobLimiter extends JavaPlugin implements Listener {
 			if (breedPossibility == -1)
 			{
 				message = breedLimitAllAnimalsMessage;
-				message = message.replace("<AnimalsLimit>", Integer.toString(maxAnyType));
+				message = message.replace("<AnimalTypeLimit>", Integer.toString(maxAnyType));
 			}
 			else
 			{
 				message = breedLimitOneAnimalMessage;
 				message = message.replace("<AnimalPlural>", animalPlurals.get(ent.getType()));
 			}
-			
+
 			message = message.replace("<Animal>", animalSingulars.get(ent.getType()));
 			message = message.replace("<MaxAnimalRadius>", Integer.toString((int) Math.round(Math.sqrt(numberControlRadiusSquared))));
-		
+
 			Message(message, player);
 			e.setCancelled(true);
 			return;
-			
+
 		}
 	}
 	public boolean isFarmAnimal(Entity en) {
 		return (en instanceof Animals) && !(en instanceof Tameable);
 	}
-	
+
 	public void applyAgeCap(Animals en) {
 		if (ageCapBaby >= 0 && !en.isAdult()) {
 			en.setAge(Math.max(en.getAge(), -ageCapBaby));
@@ -225,7 +224,7 @@ public class MobLimiter extends JavaPlugin implements Listener {
 			}
 		}
 	}
-	
+
 	public boolean isBreedingFood(EntityType type, Material food)
 	{
 		switch (type)
@@ -241,65 +240,59 @@ public class MobLimiter extends JavaPlugin implements Listener {
 			return false;
 		}
 	}
-	
+
 	public int canBreed(Location location, EntityType type)
 	{		
 		int numberOfOneType = 0;
 		int numberOfAllTypes = 0;
-		
+
 		Collection<Animals> animals = location.getWorld().getEntitiesByClass(Animals.class);
-		
+
 		for (Animals animal : animals)
 		{
 			if (!isFarmAnimal(animal))
 				continue;
-			
+
 			double distance = animal.getLocation().distanceSquared(location);
-			
+
 			if (distance <= numberControlRadiusSquared)
 			{
 				if (++numberOfAllTypes > maxAnyType)
 					return -1;
-				
+
 				if (type == animal.getType() && ++numberOfOneType > maxOneType)
 					return -2;
 			}
 		}
-		
+
 		return 0;
 	}
-	
+
 	public static void Message(String message, CommandSender sender)
 	{
-		message = message.replaceAll("\\&([0-9abcdef])", ChatColor.COLOR_CHAR + "$1");
+		message = message.replaceAll("\\&([0-9abcdefklmnor])", ChatColor.COLOR_CHAR + "$1");
 
-		String color = "f";
-		final int maxLength = 59; //Max length of chat text message
-		final String newLine = "[NEWLINE]";
-		ArrayList<String> chat = new ArrayList<String>();
-		chat.add(0, "");
-		String[] words = message.split(" ");
-		int lineNumber = 0;
-		for (int i = 0; i < words.length; i++) {
-			if (chat.get(lineNumber).replaceAll("\\" + ChatColor.COLOR_CHAR + "([0-9abcdef])", "").length() + words[i].replaceAll("\\" + ChatColor.COLOR_CHAR + "([0-9abcdef])", "").length() < maxLength && !words[i].equals(newLine)) {
-				chat.set(lineNumber, chat.get(lineNumber) + (chat.get(lineNumber).length() > 0 ? " " : ChatColor.COLOR_CHAR + color ) + words[i]);
+		final String newLine = "\\[NEWLINE\\]";
+		String[] lines = message.split(newLine);
 
-				if (words[i].indexOf(ChatColor.COLOR_CHAR) != -1) color = Character.toString(words[i].charAt(words[i].lastIndexOf(ChatColor.COLOR_CHAR) + 1));
-			}
-			else {
-				lineNumber++;
-				if (!words[i].equals(newLine)) {
-					chat.add(lineNumber, ChatColor.COLOR_CHAR + color + words[i]);
-				}
-				else
-					chat.add(lineNumber, "");
-			}
-		}
-		for (int i = 0; i < chat.size(); i++) {
-			{
-				sender.sendMessage(chat.get(i));
-			}
+		for (int i = 0; i < lines.length; i++) {
+			lines[i] = lines[i].trim();
+			
+			if (i == 0)
+				continue;
 
-		}
+			int lastColorChar = lines[i - 1].lastIndexOf(ChatColor.COLOR_CHAR);
+			if (lastColorChar == -1 || lastColorChar >= lines[i - 1].length() - 1)
+				continue;
+
+			char lastColor = lines[i - 1].charAt(lastColorChar + 1);
+			lines[i] = Character.toString(ChatColor.COLOR_CHAR).concat(Character.toString(lastColor)).concat(lines[i]);	
+			System.out.println(lines[i]);
+		}		
+		
+		for (int i = 0; i < lines.length; i++)
+			sender.sendMessage(lines[i]);
+
+
 	}
 }
