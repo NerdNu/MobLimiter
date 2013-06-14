@@ -31,3 +31,10 @@ spider: 4
 zombie: 4
 agecapbaby: 300
 agecapbreed: 300
+AnimalLimit:
+  RadiusSquared: 40000
+  MaxOneType: 80
+  MaxAllTypes: 320
+Messages:
+  BreedLimitOneAnimal: "You cannot breed this <Animal> because there is more than <AnimalTypeLimit> <AnimalPlural> in <MaxAnimalRadius> block radius around you."
+  BreedLimitAllAnimals: "You cannot breed this <Animal> because you cannot have more than <AnimalsLimit> animals in <MaxAnimalRadius> blocks radius around you."

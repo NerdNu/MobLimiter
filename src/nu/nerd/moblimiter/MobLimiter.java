@@ -235,7 +235,7 @@ public class MobLimiter extends JavaPlugin implements Listener {
 		case PIG:
 			return food == Material.CARROT_ITEM;
 		case CHICKEN:
-			return food == Material.SEEDS || food == Material.PUMPKIN_SEEDS || food == Material.NETHER_STALK;
+			return food == Material.SEEDS || food == Material.PUMPKIN_SEEDS || food == Material.NETHER_STALK || food == Material.MELON_SEEDS;
 		default:
 			return false;
 		}
