@@ -159,6 +159,9 @@ public class MobLimiter extends JavaPlugin implements Listener {
 			message = message.replace("<MaxAnimalRadius>", Integer.toString((int) Math.round(Math.sqrt(numberControlRadiusSquared))));
 		
 			Message(message, player);
+			e.setCancelled(true);
+			return;
+			
 		}
 	}
 	public boolean isFarmAnimal(Entity en) {
