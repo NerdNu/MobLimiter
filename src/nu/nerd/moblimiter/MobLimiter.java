@@ -306,7 +306,7 @@ public class MobLimiter extends JavaPlugin implements Listener {
 	}
 	
 	public boolean onCommand(CommandSender sender, Command command, String commandLabel, String[] args) {
-		if (sender.hasPermission("") && sender instanceof Player)
+		if (sender.hasPermission("moblimiter.command.animals") && sender instanceof Player)
 		{
 			AnimalsCommand.execute((Player) sender);
 		}
