@@ -151,11 +151,12 @@ public class MobLimiter extends JavaPlugin implements Listener {
 				if (breedPossibility == -1)
 				{
 					message = breedLimitAllAnimalsMessage;
-					message = message.replace("<AnimalTypeLimit>", Integer.toString(maxAnyType));
+					message = message.replace("<AnimalsLimit>", Integer.toString(maxAnyType));
 				}
 				else
 				{
 					message = breedLimitOneAnimalMessage;
+					message = message.replace("<AnimalTypeLimit>", Integer.toString(maxOneType));
 					message = message.replace("<AnimalPlural>", animalPlurals.get(ent.getType()));
 				}
 
