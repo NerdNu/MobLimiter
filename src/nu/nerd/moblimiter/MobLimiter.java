@@ -43,6 +43,7 @@ public class MobLimiter extends JavaPlugin implements Listener {
 	public static int maxOneType;
 	public static int maxAnyType;
 
+	public Map<String, Long> lastSpamMessage = new HashMap<String, Long>();
 	public String breedLimitOneAnimalMessage;
 	public String breedLimitAllAnimalsMessage;
 
@@ -143,22 +144,28 @@ public class MobLimiter extends JavaPlugin implements Listener {
 		int breedPossibility = canBreed(ent.getLocation(), ent.getType());
 		if (breedPossibility != 0)
 		{
-			String message = null;
-			if (breedPossibility == -1)
+			Long lastMessage = lastSpamMessage.get(player.getName());
+			if (lastMessage == null || System.currentTimeMillis() - lastMessage > 5000)
 			{
-				message = breedLimitAllAnimalsMessage;
-				message = message.replace("<AnimalTypeLimit>", Integer.toString(maxAnyType));
-			}
-			else
-			{
-				message = breedLimitOneAnimalMessage;
-				message = message.replace("<AnimalPlural>", animalPlurals.get(ent.getType()));
-			}
+				String message = null;
+				if (breedPossibility == -1)
+				{
+					message = breedLimitAllAnimalsMessage;
+					message = message.replace("<AnimalTypeLimit>", Integer.toString(maxAnyType));
+				}
+				else
+				{
+					message = breedLimitOneAnimalMessage;
+					message = message.replace("<AnimalPlural>", animalPlurals.get(ent.getType()));
+				}
 
-			message = message.replace("<Animal>", animalSingulars.get(ent.getType()));
-			message = message.replace("<MaxAnimalRadius>", Integer.toString((int) Math.round(Math.sqrt(numberControlRadiusSquared))));
+				message = message.replace("<Animal>", animalSingulars.get(ent.getType()));
+				message = message.replace("<MaxAnimalRadius>", Integer.toString((int) Math.round(Math.sqrt(numberControlRadiusSquared))));
 
-			Message(message, player);
+				Message(message, player);
+				lastSpamMessage.put(player.getName(), System.currentTimeMillis());
+			}
+			
 			e.setCancelled(true);
 			return;
 
