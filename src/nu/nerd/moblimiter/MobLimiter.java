@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
@@ -135,7 +136,7 @@ public class MobLimiter extends JavaPlugin implements Listener {
 		if (ent == null || !isFarmAnimal(ent))
 			return;
 
-		Player player = e.getPlayer();
+		final Player player = e.getPlayer();
 		ItemStack hand = player.getItemInHand();
 
 		if (hand == null || !isBreedingFood(ent.getType(), hand.getType()))
@@ -168,6 +169,14 @@ public class MobLimiter extends JavaPlugin implements Listener {
 			}
 			
 			e.setCancelled(true);
+			Bukkit.getScheduler().runTaskLater(this, new Runnable() {
+
+				@Override
+				public void run() {
+					player.updateInventory();
+				}
+				
+			}, 2);
 			return;
 
 		}
