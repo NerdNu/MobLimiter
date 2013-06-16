@@ -8,6 +8,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.craftbukkit.v1_5_R3.CraftChunk;
 import org.bukkit.entity.Animals;
@@ -38,9 +39,9 @@ public class MobLimiter extends JavaPlugin implements Listener {
 	public int ageCapBaby = -1;
 	public int ageCapBreed = -1;
 
-	public int numberControlRadiusSquared;
-	public int maxOneType;
-	public int maxAnyType;
+	public static int numberControlRadiusSquared;
+	public static int maxOneType;
+	public static int maxAnyType;
 
 	public String breedLimitOneAnimalMessage;
 	public String breedLimitAllAnimalsMessage;
@@ -257,10 +258,10 @@ public class MobLimiter extends JavaPlugin implements Listener {
 
 			if (distance <= numberControlRadiusSquared)
 			{
-				if (++numberOfAllTypes > maxAnyType)
+				if (++numberOfAllTypes >= maxAnyType)
 					return -1;
 
-				if (type == animal.getType() && ++numberOfOneType > maxOneType)
+				if (type == animal.getType() && ++numberOfOneType >= maxOneType)
 					return -2;
 			}
 		}
@@ -294,5 +295,18 @@ public class MobLimiter extends JavaPlugin implements Listener {
 			sender.sendMessage(lines[i]);
 
 
+	}
+	
+	public boolean onCommand(CommandSender sender, Command command, String commandLabel, String[] args) {
+		if (sender.hasPermission("") && sender instanceof Player)
+		{
+			AnimalsCommand.execute((Player) sender);
+		}
+		else
+		{
+			Message("&cYou are not allowed to use this command!", sender);
+		}
+		
+		return true;
 	}
 }

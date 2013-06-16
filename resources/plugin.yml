@@ -1,4 +1,10 @@
 name: MobLimiter
 main: nu.nerd.moblimiter.MobLimiter
-version: 1.1
-author: Travis Watkins
+version: 1.2
+author: Travis Watkins, matejdro
+commands:
+    animals:
+        description: Nearby animals.
+permissions:
+    moblimiter.command.animals:
+        default: true
