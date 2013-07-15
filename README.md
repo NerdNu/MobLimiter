@@ -17,7 +17,10 @@ To limit a mobs numbers on restart/unload we define it like so:
 
 The name of the **entity** followed by a valid **int** after a **:** is placed on a single line
 
-Any mobs not given numbers in the config will be ignored and no limiting will happen to that specific mob type
+Any mobs not given numbers in the config will be ignored and no limiting will happen to that specific mob type.  However, most mobs have default limits configured in the config.yml file built into the plugin.  You can explicitly specify unlimited numbers of a particular mob using a negative number.  For example:
+
+    ocelot: -1
+    wolf: -1
 
 *Please note, leaving emtpy lines in the config is a bad idea, don't do this, it won't crash or corrupt the config, it just makes things messy*
 
