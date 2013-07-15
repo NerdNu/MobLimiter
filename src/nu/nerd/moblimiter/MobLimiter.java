@@ -6,7 +6,6 @@ import java.util.Map;
 import org.bukkit.Chunk;
 import org.bukkit.entity.Animals;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Monster;
 import org.bukkit.entity.Sheep;
 import org.bukkit.entity.Tameable;
@@ -26,6 +25,10 @@ public class MobLimiter extends JavaPlugin implements Listener {
 
 	@Override
 	public void onEnable() {
+		try {
+			saveDefaultConfig();
+		} catch (Exception ex) {
+		}
 		this.getConfig().options().copyDefaults(true);
 		for (Map.Entry<String, Object> entry : this.getConfig().getValues(false).entrySet()) {
 			if (entry.getKey() != null && entry.getValue() != null && entry.getValue() instanceof Integer) {
@@ -97,7 +100,7 @@ public class MobLimiter extends JavaPlugin implements Listener {
 				count.put(mobName, ++mobCount);
 				if (limits.get(mobName) != null) {
 					if (mobCount > limits.get(mobName)) {
-						((LivingEntity) entity).remove();
+						entity.remove();
 					}
 				}
 			}
