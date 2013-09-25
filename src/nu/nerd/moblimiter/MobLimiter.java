@@ -1,11 +1,14 @@
 package nu.nerd.moblimiter;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 
 import org.bukkit.Chunk;
+import org.bukkit.Location;
 import org.bukkit.entity.Animals;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Monster;
 import org.bukkit.entity.Sheep;
 import org.bukkit.entity.Tameable;
@@ -19,17 +22,43 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class MobLimiter extends JavaPlugin implements Listener {
 
+	/**
+	 * Map from lower case EntityType.name() to max number of entities of that
+	 * type. Note that EntityType.name() is different from EntityType.getName().
+	 * The former is MUSHROOM_COW while the latter is MushroomCow.
+	 */
 	public Map<String, Integer> limits = new HashMap<String, Integer>();
 	public int ageCapBaby = -1;
 	public int ageCapBreed = -1;
 
+	/**
+	 * If true, per-chunk mob caps are enforced for non-farm-animal mobs when
+	 * they spawn, in addition to when the chunk is unloaded.
+	 */
+	public boolean limitNaturalSpawn;
+
+	/**
+	 * If true, the mob cap applies even when the mob was spawned from a
+	 * mob-spawner.
+	 */
+	public boolean limitSpawnerSpawn;
+
+	/**
+	 * If true, cancelled spawns are shown in the server log.
+	 */
+	public boolean debugLimitSpawn;
+
+	/**
+	 * The set of Entity types whose caps are enforced when spawning.
+	 * 
+	 * Note that farm animals are explicitly excluded from that cap. Players can
+	 * breed them over the limit.
+	 */
+	public HashSet<EntityType> spawnLimitedEntityTypes = new HashSet<EntityType>();
+
 	@Override
 	public void onEnable() {
-		try {
-			saveDefaultConfig();
-		} catch (Exception ex) {
-		}
-		this.getConfig().options().copyDefaults(true);
+		saveDefaultConfig();
 		for (Map.Entry<String, Object> entry : this.getConfig().getValues(false).entrySet()) {
 			if (entry.getKey() != null && entry.getValue() != null && entry.getValue() instanceof Integer) {
 				if (entry.getKey().equals("agecapbaby")) {
@@ -40,12 +69,26 @@ public class MobLimiter extends JavaPlugin implements Listener {
 					// A negative limit allows unlimited numbers of that mob.
 					int max = (Integer) entry.getValue();
 					if (max >= 0) {
-						limits.put(entry.getKey(), max);
+						limits.put(entry.getKey().toLowerCase(), max);
 					}
 				}
 			}
 		}
-		this.saveConfig();
+
+		limitNaturalSpawn = getConfig().getBoolean("settings.limit_natural_spawn");
+		limitSpawnerSpawn = getConfig().getBoolean("settings.limit_spawner_spawn");
+		debugLimitSpawn = getConfig().getBoolean("settings.debug.limit_spawn");
+
+		if (getConfig().isList("settings.spawn_limited")) {
+			for (String entityTypeName : getConfig().getStringList("settings.spawn_limited")) {
+				EntityType entityType = EntityType.valueOf(entityTypeName.toUpperCase());
+				if (entityType == null) {
+					getLogger().severe("Invalid entity type for spawn limiting: " + entityTypeName);
+				} else {
+					spawnLimitedEntityTypes.add(entityType);
+				}
+			}
+		}
 		this.getServer().getPluginManager().registerEvents(this, this);
 	}
 
@@ -61,13 +104,42 @@ public class MobLimiter extends JavaPlugin implements Listener {
 		removeMobs(e.getChunk());
 	}
 
-	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
-	public void onCreatureSpawnEvent(final CreatureSpawnEvent e) {
-		if ((e.getSpawnReason() == SpawnReason.BREEDING || e.getSpawnReason() == SpawnReason.EGG) && isFarmAnimal(e.getEntity())) {
-			applyAgeCap((Animals) e.getEntity());
-			for (Entity en : e.getEntity().getNearbyEntities(4, 4, 4)) {
+	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+	public void onCreatureSpawnEvent(final CreatureSpawnEvent event) {
+		if ((event.getSpawnReason() == SpawnReason.BREEDING || event.getSpawnReason() == SpawnReason.EGG) && isFarmAnimal(event.getEntity())) {
+			applyAgeCap((Animals) event.getEntity());
+			for (Entity en : event.getEntity().getNearbyEntities(4, 4, 4)) {
 				if (isFarmAnimal(en)) {
 					applyAgeCap((Animals) en);
+				}
+			}
+		} else {
+			// Villager breeding has a spawn reason of SpawnReason.DEFAULT.
+			boolean doLimitNaturalSpawn = limitNaturalSpawn &&
+											(event.getSpawnReason() == SpawnReason.NATURAL ||
+											event.getSpawnReason() == SpawnReason.DEFAULT);
+			boolean doLimitSpawnerSpawn = limitSpawnerSpawn && event.getSpawnReason() == SpawnReason.SPAWNER;
+			if ((doLimitNaturalSpawn || doLimitSpawnerSpawn) &&
+				spawnLimitedEntityTypes.contains(event.getEntityType()) && hasCap(event.getEntityType())) {
+				int cap = getCap(event.getEntityType());
+				int count = 0;
+				for (Entity otherEntity : event.getLocation().getChunk().getEntities()) {
+					if (otherEntity.getType() == event.getEntityType()) {
+						++count;
+						if (count >= cap) {
+							break;
+						}
+					}
+				}
+				if (count >= cap) {
+					if (debugLimitSpawn) {
+						Location loc = event.getLocation();
+						String message = String.format("Cancel spawn of %s at (%s,%d,%d,%d) (reason = %s, cap = %d)",
+							event.getEntityType().name(), loc.getWorld().getName(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ(),
+							event.getSpawnReason().name().toLowerCase(), cap);
+						getLogger().info(message);
+					}
+					event.setCancelled(true);
 				}
 			}
 		}
@@ -83,6 +155,27 @@ public class MobLimiter extends JavaPlugin implements Listener {
 		} else if (ageCapBreed >= 0 && en.isAdult()) {
 			en.setAge(Math.min(en.getAge(), ageCapBreed));
 		}
+	}
+
+	/**
+	 * Return true if the specified Entity type has a cap on numbers.
+	 * 
+	 * @return true if the specified Entity type has a cap on numbers.
+	 */
+	public boolean hasCap(EntityType type) {
+		return getCap(type) >= 0;
+	}
+
+	/**
+	 * Return true if the specified Entity type has a cap on numbers, or -1 if
+	 * uncapped.
+	 * 
+	 * @return true if the specified Entity type has a cap on numbers, or -1 if
+	 *         uncapped.
+	 */
+	public int getCap(EntityType type) {
+		Integer cap = limits.get(type.name().toLowerCase());
+		return (cap != null) ? cap : -1;
 	}
 
 	public void removeMobs(Chunk chunk) {
