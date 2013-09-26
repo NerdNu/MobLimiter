@@ -114,10 +114,12 @@ public class MobLimiter extends JavaPlugin implements Listener {
 				}
 			}
 		} else {
-			// Villager breeding has a spawn reason of SpawnReason.DEFAULT.
+			// Villager breeding has a spawn reason of SpawnReason.DEFAULT
+			// or SpawnReason.BREEDING depending on CraftBukkit version.
 			boolean doLimitNaturalSpawn = limitNaturalSpawn &&
-											(event.getSpawnReason() == SpawnReason.NATURAL ||
-											event.getSpawnReason() == SpawnReason.DEFAULT);
+												(event.getSpawnReason() == SpawnReason.BREEDING ||
+													event.getSpawnReason() == SpawnReason.NATURAL ||
+													event.getSpawnReason() == SpawnReason.DEFAULT);
 			boolean doLimitSpawnerSpawn = limitSpawnerSpawn && event.getSpawnReason() == SpawnReason.SPAWNER;
 			if ((doLimitNaturalSpawn || doLimitSpawnerSpawn) &&
 				spawnLimitedEntityTypes.contains(event.getEntityType()) && hasCap(event.getEntityType())) {
