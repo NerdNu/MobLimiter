@@ -104,7 +104,7 @@ public class MobLimiter extends JavaPlugin implements Listener {
 		removeMobs(e.getChunk());
 	}
 
-	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
 	public void onCreatureSpawnEvent(final CreatureSpawnEvent event) {
 		if ((event.getSpawnReason() == SpawnReason.BREEDING || event.getSpawnReason() == SpawnReason.EGG) && isFarmAnimal(event.getEntity())) {
 			applyAgeCap((Animals) event.getEntity());
