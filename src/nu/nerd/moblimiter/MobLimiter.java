@@ -9,6 +9,7 @@ import org.bukkit.Location;
 import org.bukkit.entity.Animals;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Monster;
 import org.bukkit.entity.Sheep;
 import org.bukkit.entity.Tameable;
@@ -18,6 +19,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
 import org.bukkit.event.world.ChunkUnloadEvent;
+import org.bukkit.inventory.EntityEquipment;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class MobLimiter extends JavaPlugin implements Listener {
@@ -27,57 +30,81 @@ public class MobLimiter extends JavaPlugin implements Listener {
 	 * type. Note that EntityType.name() is different from EntityType.getName().
 	 * The former is MUSHROOM_COW while the latter is MushroomCow.
 	 */
-	public Map<String, Integer> limits = new HashMap<String, Integer>();
-	public int ageCapBaby = -1;
-	public int ageCapBreed = -1;
+	protected Map<String, Integer> limits = new HashMap<String, Integer>();
+	protected int ageCapBaby = -1;
+	protected int ageCapBreed = -1;
 
 	/**
 	 * If true, per-chunk mob caps are enforced for non-farm-animal mobs when
 	 * they spawn, in addition to when the chunk is unloaded.
 	 */
-	public boolean limitNaturalSpawn;
+	protected boolean limitNaturalSpawn;
 
 	/**
 	 * If true, the mob cap applies even when the mob was spawned from a
 	 * mob-spawner.
 	 */
-	public boolean limitSpawnerSpawn;
+	protected boolean limitSpawnerSpawn;
 
 	/**
 	 * If true, cancelled spawns are shown in the server log.
 	 */
-	public boolean debugLimitSpawn;
+	protected boolean debugLimitSpawn;
+	
+    /**
+     * If true, limits on numbers of each mob type are logged as the are parsed
+     * from the configuration file.
+     */
+    protected boolean debugLimits;
 
-	/**
+    /**
+     * If true, mobs removed during chunk unloading are logged.
+     */
+    protected boolean debugChunkUnload;
+    
+    /**
+     * If true, do debug traces of the age cap code.
+     */
+    protected boolean debugAgeCap;
+    
+    /**
 	 * The set of Entity types whose caps are enforced when spawning.
 	 * 
 	 * Note that farm animals are explicitly excluded from that cap. Players can
 	 * breed them over the limit.
 	 */
-	public HashSet<EntityType> spawnLimitedEntityTypes = new HashSet<EntityType>();
+	protected HashSet<EntityType> spawnLimitedEntityTypes = new HashSet<EntityType>();
 
 	@Override
 	public void onEnable() {
 		saveDefaultConfig();
+		
+        limitNaturalSpawn = getConfig().getBoolean("settings.limit_natural_spawn");
+        limitSpawnerSpawn = getConfig().getBoolean("settings.limit_spawner_spawn");
+        debugLimitSpawn = getConfig().getBoolean("settings.debug.limit_spawn");
+		debugLimits = getConfig().getBoolean("settings.debug.limits");
+		debugChunkUnload = getConfig().getBoolean("settings.debug.chunk_unload");
+        debugAgeCap = getConfig().getBoolean("settings.debug.age_cap");
+		
 		for (Map.Entry<String, Object> entry : this.getConfig().getValues(false).entrySet()) {
 			if (entry.getKey() != null && entry.getValue() != null && entry.getValue() instanceof Integer) {
-				if (entry.getKey().equals("agecapbaby")) {
-					ageCapBaby = (Integer) entry.getValue();
-				} else if (entry.getKey().equals("agecapbreed")) {
-					ageCapBreed = (Integer) entry.getValue();
+			    String name = entry.getKey().toLowerCase();
+			    int value = (Integer) entry.getValue();
+				if (name.equals("agecapbaby")) {
+					ageCapBaby = value;
+				} else if (name.equals("agecapbreed")) {
+					ageCapBreed = value;
 				} else {
 					// A negative limit allows unlimited numbers of that mob.
-					int max = (Integer) entry.getValue();
-					if (max >= 0) {
-						limits.put(entry.getKey().toLowerCase(), max);
+					if (value >= 0) {
+						limits.put(name, value);
+						if (debugLimits) {
+						    getLogger().info(name + " limit: " + value);
+						}
 					}
 				}
 			}
 		}
-
-		limitNaturalSpawn = getConfig().getBoolean("settings.limit_natural_spawn");
-		limitSpawnerSpawn = getConfig().getBoolean("settings.limit_spawner_spawn");
-		debugLimitSpawn = getConfig().getBoolean("settings.debug.limit_spawn");
 
 		if (getConfig().isList("settings.spawn_limited")) {
 			for (String entityTypeName : getConfig().getStringList("settings.spawn_limited")) {
@@ -157,6 +184,12 @@ public class MobLimiter extends JavaPlugin implements Listener {
 		} else if (ageCapBreed >= 0 && en.isAdult()) {
 			en.setAge(Math.min(en.getAge(), ageCapBreed));
 		}
+        if (debugAgeCap) {
+            Location loc = en.getLocation();
+            String message = String.format("Age of %s at (%s,%d,%d,%d) capped to %d",
+                en.getType().getName(), loc.getWorld().getName(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ(), en.getAge());
+            getLogger().info(message);
+        }
 	}
 
 	/**
@@ -179,25 +212,68 @@ public class MobLimiter extends JavaPlugin implements Listener {
 		Integer cap = limits.get(type.name().toLowerCase());
 		return (cap != null) ? cap : -1;
 	}
+	
+	/**
+	 * Return true if the specified LivingEntity is special, meaning it has 
+	 * been named, tamed, or is wearing items in its armor slots.
+     * 
+     * Such "special" mobs are exempted from being removed on chunk unload.
+     * However, for hostiles, this is not a guarantee as the server can and will
+     * despawn them without any event from Bukkit.
+     * 
+     * @return true if the mob is special and should be exempt from limits.
+	 */
+	public boolean isSpecialMob(LivingEntity living) {
+	    if (living.getCustomName() != null) {
+	        return true;
+	    }
+	    
+	    if (living instanceof Tameable) {
+	        Tameable tameable = (Tameable) living;
+	        if (tameable.isTamed()) {
+	            return true;
+	        }
+	    }
+	    
+	    EntityEquipment equipment = living.getEquipment();
+	    for (ItemStack armor : equipment.getArmorContents()) {
+	        if (armor != null) {
+	            return true;
+	        }
+	    }
+	    
+	    return false;
+	}
+	
 
 	public void removeMobs(Chunk chunk) {
 		Map<String, Integer> count = new HashMap<String, Integer>();
 		for (Entity entity : chunk.getEntities()) {
 			if (!entity.isDead() && (entity instanceof Animals || entity instanceof Monster)) {
-				String mobName = entity.getType().name().toLowerCase();
-				if (entity instanceof Sheep) {
-					mobName += ((Sheep) entity).getColor().name().toLowerCase();
-				}
-				if (count.get(mobName) == null) {
-					count.put(mobName, 0);
-				}
-				int mobCount = count.get(mobName);
-				count.put(mobName, ++mobCount);
-				if (limits.get(mobName) != null) {
-					if (mobCount > limits.get(mobName)) {
-						entity.remove();
-					}
-				}
+			    // Exampt "special mobs" from removal.
+			    // Animals and Monsters are both LivingEntitys so this cast succeeds.
+			    if (! isSpecialMob((LivingEntity) entity)) {
+    				String mobName = entity.getType().name().toLowerCase();
+    				if (entity instanceof Sheep) {
+    					mobName += ((Sheep) entity).getColor().name().toLowerCase();
+    				}
+    				if (count.get(mobName) == null) {
+    					count.put(mobName, 0);
+    				}
+    				int mobCount = count.get(mobName);
+    				count.put(mobName, ++mobCount);
+    				if (limits.get(mobName) != null) {
+    					if (mobCount > limits.get(mobName)) {    					    
+    						entity.remove();
+    						if (debugChunkUnload) {
+    						    Location loc = entity.getLocation();
+    	                        String message = String.format("Chunk unload removes %s at (%s,%d,%d,%d)",
+    	                            mobName, loc.getWorld().getName(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
+    						    getLogger().info(message);
+    						}
+    					}
+    				}
+			    }
 			}
 		}
 	}
