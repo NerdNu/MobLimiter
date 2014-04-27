@@ -37,6 +37,7 @@ settings:
     limits: false
     chunk_unload: false
     age_cap: false
+    special: false
   limit_natural_spawn: false
   limit_spawner_spawn: false
   spawn_limited: []
