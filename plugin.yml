@@ -7,3 +7,6 @@ website: ${project.url}
 
 main: nu.nerd.moblimiter.MobLimiter
 
+commands:
+    moblimiter:
+        description: Gives information about MobLimiter
