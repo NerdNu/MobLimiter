@@ -419,7 +419,7 @@ public class MobLimiter extends JavaPlugin implements Listener {
             message.append("Additionally, the drops of passive mobs "
                     + "are plumped so that more items drop which allows for fewer animals to produce "
                     + "more resources.  Tamed pet mobs, mobs custom named with a nametag, and mobs "
-                    + "wearing armor are not be culled.  If you have any questions please feel free "
+                    + "wearing armor are not culled.  If you have any questions please feel free "
                     + "to contact a server administrator.");
 
             sender.sendMessage(message.toString());
