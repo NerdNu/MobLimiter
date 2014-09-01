@@ -131,9 +131,7 @@ public class MobLimiter extends JavaPlugin implements Listener {
 
     @Override
     public void onDisable() {
-        for (Chunk c : getServer().getWorlds().get(0).getLoadedChunks()) {
-            removeMobs(c);
-        }
+		removeAllMobs();
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
@@ -314,6 +312,12 @@ public class MobLimiter extends JavaPlugin implements Listener {
             }
         }
     }
+
+	private void removeAllMobs() {
+        for (Chunk c : getServer().getWorlds().get(0).getLoadedChunks()) {
+            removeMobs(c);
+        }
+	}
     
     /**
      * Informative /moblimiter command to describe the purpose of MobLimiter to players 
@@ -323,6 +327,13 @@ public class MobLimiter extends JavaPlugin implements Listener {
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         if (cmd.getName().equalsIgnoreCase("moblimiter")) {
+			if (args.length == 1 && args[0].equalsIgnoreCase("cull") && sender.hasPermission("moblimiter.cull")) {
+				sender.sendMessage("Culling mobs in all loaded chunks");
+				removeAllMobs();
+
+				return true;
+			}
+
             StringBuilder message = new StringBuilder();
             message.append(ChatColor.GOLD);
             message.append("This server runs a plugin called " + ChatColor.YELLOW + "MobLimiter"

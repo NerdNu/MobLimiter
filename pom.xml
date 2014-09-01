@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>nu.nerd</groupId>
 	<artifactId>MobLimiter</artifactId>
-	<version>1.0</version>
+	<version>1.1</version>
 	<packaging>jar</packaging>
 	<name>MobLimiter</name>
 	<properties>
@@ -76,7 +76,7 @@
 						<archive>
 							<addMavenDescriptor>false</addMavenDescriptor>
 						</archive>
-						<finalName>MobLimiter</finalName>
+						<finalName>MobLimiter-v${project.version}</finalName>
 					</configuration>
 				</plugin>
 				<plugin>
