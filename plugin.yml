@@ -10,3 +10,7 @@ main: nu.nerd.moblimiter.MobLimiter
 commands:
     moblimiter:
         description: Gives information about MobLimiter
+permissions:
+    moblimit.cull:
+        description: Access to cull command
+        default: op
