@@ -187,6 +187,12 @@ public class MobLimiter extends JavaPlugin implements Listener {
     }
 
     public void applyAgeCap(Animals en) {
+        if (en.getAgeLock() == true) {
+            if (debugAgeCap) {
+                getLogger().info("Age locked " + getMobDescription(en) + " with age " + en.getAge() + " was not age capped");
+            }
+            return;
+        }
         if (ageCapBaby >= 0 && !en.isAdult()) {
             en.setAge(Math.max(en.getAge(), -ageCapBaby));
         } else if (ageCapBreed >= 0 && en.isAdult()) {
