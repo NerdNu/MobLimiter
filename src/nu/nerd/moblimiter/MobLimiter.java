@@ -141,7 +141,8 @@ public class MobLimiter extends JavaPlugin implements Listener {
 
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
     public void onCreatureSpawnEvent(final CreatureSpawnEvent event) {
-        if ((event.getSpawnReason() == SpawnReason.BREEDING || event.getSpawnReason() == SpawnReason.EGG) && isFarmAnimal(event.getEntity())) {
+    	SpawnReason reason = event.getSpawnReason();
+        if ((reason == SpawnReason.BREEDING || reason == SpawnReason.EGG || reason == SpawnReason.DISPENSE_EGG) && isFarmAnimal(event.getEntity())) {
             applyAgeCap((Animals) event.getEntity());
             for (Entity en : event.getEntity().getNearbyEntities(4, 4, 4)) {
                 if (isFarmAnimal(en)) {
