@@ -14,3 +14,7 @@ permissions:
     moblimit.cull:
         description: Access to cull command
         default: op
+    moblimiter.check:
+        description: Check if a mob is special
+        default: op
+
