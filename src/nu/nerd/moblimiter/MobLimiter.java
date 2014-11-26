@@ -370,7 +370,7 @@ public class MobLimiter extends JavaPlugin implements Listener {
 
 				return true;
 			}
-			else if (args[0].equalsIgnoreCase("check") && sender.hasPermission("moblimiter.check")) {
+			else if (args.length == 1 && args[0].equalsIgnoreCase("check") && sender.hasPermission("moblimiter.check")) {
 				if (sender instanceof Player) {
 					LivingEntity le = (LivingEntity) getTarget((Player) sender);
 					boolean animalOrMonster = (le instanceof Animals) || (le instanceof Monster);
