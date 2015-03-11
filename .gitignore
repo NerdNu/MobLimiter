@@ -2,3 +2,6 @@ target
 /classes
 /bin
 *~
+.DS_Store
+.idea
+*.iml
