@@ -449,6 +449,8 @@ public class MobLimiter extends JavaPlugin implements Listener {
                     + getConfig().getInt("enderman"));
             message.append(ChatColor.YELLOW + " ghast: " + ChatColor.GRAY 
                     + getConfig().getInt("ghast"));
+            message.append(ChatColor.YELLOW + " guardian: " + ChatColor.GRAY
+                    + getConfig().getInt("guardian"));
             message.append(ChatColor.YELLOW + " silverfish: " + ChatColor.GRAY 
                     + getConfig().getInt("silverfish"));
             message.append(ChatColor.YELLOW + " skeleton: " + ChatColor.GRAY 

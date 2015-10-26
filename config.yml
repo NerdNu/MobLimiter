@@ -25,6 +25,8 @@ blaze: 4
 cave_spider: 4
 creeper: 4
 enderman: 4
+guardian: 4
+ghast: 1
 pig_zombie: 4
 silverfish: 6
 skeleton: 4
