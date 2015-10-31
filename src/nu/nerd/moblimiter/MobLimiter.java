@@ -10,14 +10,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Animals;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Monster;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.Sheep;
-import org.bukkit.entity.Tameable;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -279,6 +272,10 @@ public class MobLimiter extends JavaPlugin implements Listener {
             if (tameable.isTamed()) {
                 return true;
             }
+        }
+
+        if (living.getType() == EntityType.GUARDIAN && ((Guardian)living).isElder()) {
+            return true; //save the sponge!
         }
 
         EntityEquipment equipment = living.getEquipment();
