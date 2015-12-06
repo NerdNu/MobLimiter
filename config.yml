@@ -43,4 +43,5 @@ settings:
     special: false
   limit_natural_spawn: false
   limit_spawner_spawn: false
-  spawn_limited: []
+  spawner_limited: []
+  natural_limited: []

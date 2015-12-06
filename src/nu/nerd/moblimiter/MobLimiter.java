@@ -72,12 +72,20 @@ public class MobLimiter extends JavaPlugin implements Listener {
     protected boolean debugSpecial;
 
     /**
-     * The set of Entity types whose caps are enforced when spawning.
+     * The set of Entity types whose caps are enforced when spawning naturally.
      * 
      * Note that farm animals are explicitly excluded from that cap. Players can
      * breed them over the limit.
      */
-    protected HashMap<EntityType, Integer> spawnLimitedEntities = new HashMap<EntityType, Integer>();
+    protected HashMap<EntityType, Integer> naturalLimitedEntities = new HashMap<EntityType, Integer>();
+
+    /**
+     * The set of Entity types whose caps are enforced when spawned by a mobspawner.
+     *
+     * Note that farm animals are explicitly excluded from that cap. Players can
+     * breed them over the limit.
+     */
+    protected HashMap<EntityType, Integer> spawnerLimitedEntities = new HashMap<EntityType, Integer>();
 
     @Override
     public void onEnable() {
@@ -111,17 +119,30 @@ public class MobLimiter extends JavaPlugin implements Listener {
             }
         }
 
-        if (getConfig().isConfigurationSection("settings.spawn_limited")) {
-            for (String entityTypeName : getConfig().getConfigurationSection("settings.spawn_limited").getKeys(false)) {
+        if (getConfig().isConfigurationSection("settings.natural_limited")) {
+            for (String entityTypeName : getConfig().getConfigurationSection("settings.natural_limited").getKeys(false)) {
                 EntityType entityType = EntityType.valueOf(entityTypeName.toUpperCase());
                 if (entityType == null) {
-                    getLogger().severe("Invalid entity type for spawn limiting: " + entityTypeName);
+                    getLogger().severe("Invalid entity type for natural spawn limiting: " + entityTypeName);
                 } else {
-                    int count = getConfig().getInt(String.format("settings.spawn_limited.%s", entityTypeName));
-                    spawnLimitedEntities.put(entityType, count);
+                    int count = getConfig().getInt(String.format("settings.natural_limited.%s", entityTypeName));
+                    naturalLimitedEntities.put(entityType, count);
                 }
             }
         }
+
+        if (getConfig().isConfigurationSection("settings.spawner_limited")) {
+            for (String entityTypeName : getConfig().getConfigurationSection("settings.spawner_limited").getKeys(false)) {
+                EntityType entityType = EntityType.valueOf(entityTypeName.toUpperCase());
+                if (entityType == null) {
+                    getLogger().severe("Invalid entity type for natural mobspawner limiting: " + entityTypeName);
+                } else {
+                    int count = getConfig().getInt(String.format("settings.spawner_limited.%s", entityTypeName));
+                    spawnerLimitedEntities.put(entityType, count);
+                }
+            }
+        }
+
         this.getServer().getPluginManager().registerEvents(this, this);
     }
 
@@ -153,28 +174,34 @@ public class MobLimiter extends JavaPlugin implements Listener {
                                            event.getSpawnReason() == SpawnReason.NATURAL ||
                                           event.getSpawnReason() == SpawnReason.DEFAULT);
             boolean doLimitSpawnerSpawn = limitSpawnerSpawn && event.getSpawnReason() == SpawnReason.SPAWNER;
-            if ((doLimitNaturalSpawn || doLimitSpawnerSpawn) &&
-                spawnLimitedEntities.containsKey(event.getEntityType())) {
-                int cap = spawnLimitedEntities.get(event.getEntityType());
-                int count = 0;
-                for (Entity otherEntity : event.getLocation().getChunk().getEntities()) {
-                    if (otherEntity.getType() == event.getEntityType()) {
-                        ++count;
-                        if (count >= cap) {
-                            break;
-                        }
+            int cap;
+            if (doLimitNaturalSpawn && naturalLimitedEntities.containsKey(event.getEntityType())) {
+                cap = naturalLimitedEntities.get(event.getEntityType());
+            }
+            else if (doLimitSpawnerSpawn && spawnerLimitedEntities.containsKey(event.getEntityType())) {
+                cap = spawnerLimitedEntities.get(event.getEntityType());
+            }
+            else {
+                return;
+            }
+            int count = 0;
+            for (Entity otherEntity : event.getLocation().getChunk().getEntities()) {
+                if (otherEntity.getType() == event.getEntityType()) {
+                    ++count;
+                    if (count >= cap) {
+                        break;
                     }
                 }
-                if (count >= cap) {
-                    if (debugLimitSpawn) {
-                        getLogger().info("Cancel spawn of " + getMobDescription(event.getEntity()) +
-                                         " (reason = " + event.getSpawnReason().name().toLowerCase() + ", cap = " + cap + ")");
-                    }
+            }
+            if (count >= cap) {
+                if (debugLimitSpawn) {
+                    getLogger().info("Cancel spawn of " + getMobDescription(event.getEntity()) +
+                                     " (reason = " + event.getSpawnReason().name().toLowerCase() + ", cap = " + cap + ")");
+                }
 
-                    // See: https://github.com/NerdNu/NerdBugs/issues/180
-                    // Trying remove() instead since we already use that.
-                    event.getEntity().remove();
-                }
+                // See: https://github.com/NerdNu/NerdBugs/issues/180
+                // Trying remove() instead since we already use that.
+                event.getEntity().remove();
             }
         }
     }
