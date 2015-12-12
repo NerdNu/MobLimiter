@@ -77,7 +77,7 @@ public class MobLimiter extends JavaPlugin implements Listener {
      * Note that farm animals are explicitly excluded from that cap. Players can
      * breed them over the limit.
      */
-    protected HashSet<EntityType> spawnLimitedEntityTypes = new HashSet<EntityType>();
+    protected HashMap<EntityType, Integer> spawnLimitedEntities = new HashMap<EntityType, Integer>();
 
     @Override
     public void onEnable() {
@@ -111,13 +111,14 @@ public class MobLimiter extends JavaPlugin implements Listener {
             }
         }
 
-        if (getConfig().isList("settings.spawn_limited")) {
-            for (String entityTypeName : getConfig().getStringList("settings.spawn_limited")) {
+        if (getConfig().isConfigurationSection("settings.spawn_limited")) {
+            for (String entityTypeName : getConfig().getConfigurationSection("settings.spawn_limited").getKeys(false)) {
                 EntityType entityType = EntityType.valueOf(entityTypeName.toUpperCase());
                 if (entityType == null) {
                     getLogger().severe("Invalid entity type for spawn limiting: " + entityTypeName);
                 } else {
-                    spawnLimitedEntityTypes.add(entityType);
+                    int count = getConfig().getInt(String.format("settings.spawn_limited.%s", entityTypeName));
+                    spawnLimitedEntities.put(entityType, count);
                 }
             }
         }
@@ -153,8 +154,8 @@ public class MobLimiter extends JavaPlugin implements Listener {
                                           event.getSpawnReason() == SpawnReason.DEFAULT);
             boolean doLimitSpawnerSpawn = limitSpawnerSpawn && event.getSpawnReason() == SpawnReason.SPAWNER;
             if ((doLimitNaturalSpawn || doLimitSpawnerSpawn) &&
-                spawnLimitedEntityTypes.contains(event.getEntityType()) && hasCap(event.getEntity())) {
-                int cap = getCap(getCapKey(event.getEntity()));
+                spawnLimitedEntities.containsKey(event.getEntityType())) {
+                int cap = spawnLimitedEntities.get(event.getEntityType());
                 int count = 0;
                 for (Entity otherEntity : event.getLocation().getChunk().getEntities()) {
                     if (otherEntity.getType() == event.getEntityType()) {
