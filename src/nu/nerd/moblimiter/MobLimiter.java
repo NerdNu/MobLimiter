@@ -89,6 +89,7 @@ public class MobLimiter extends JavaPlugin implements Listener {
 
     @Override
     public void onEnable() {
+
         saveDefaultConfig();
 
         limitNaturalSpawn = getConfig().getBoolean("settings.limit_natural_spawn");
@@ -144,6 +145,7 @@ public class MobLimiter extends JavaPlugin implements Listener {
         }
 
         this.getServer().getPluginManager().registerEvents(this, this);
+        
     }
 
     @Override
