@@ -160,7 +160,9 @@ public class MobLimiter extends JavaPlugin implements Listener {
 
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
     public void onCreatureSpawnEvent(final CreatureSpawnEvent event) {
+
     	SpawnReason reason = event.getSpawnReason();
+
         if ((reason == SpawnReason.BREEDING || reason == SpawnReason.EGG || reason == SpawnReason.DISPENSE_EGG) && isFarmAnimal(event.getEntity())) {
             applyAgeCap((Animals) event.getEntity());
             for (Entity en : event.getEntity().getNearbyEntities(4, 4, 4)) {
@@ -168,44 +170,45 @@ public class MobLimiter extends JavaPlugin implements Listener {
                     applyAgeCap((Animals) en);
                 }
             }
-        } else {
-            // Villager breeding has a spawn reason of SpawnReason.DEFAULT
-            // or SpawnReason.BREEDING depending on CraftBukkit version.
-            boolean doLimitNaturalSpawn = limitNaturalSpawn &&
-                                          (event.getSpawnReason() == SpawnReason.BREEDING ||
-                                           event.getSpawnReason() == SpawnReason.NATURAL ||
-                                          event.getSpawnReason() == SpawnReason.DEFAULT);
-            boolean doLimitSpawnerSpawn = limitSpawnerSpawn && event.getSpawnReason() == SpawnReason.SPAWNER;
-            int cap;
-            if (doLimitNaturalSpawn && naturalLimitedEntities.containsKey(event.getEntityType())) {
-                cap = naturalLimitedEntities.get(event.getEntityType());
-            }
-            else if (doLimitSpawnerSpawn && spawnerLimitedEntities.containsKey(event.getEntityType())) {
-                cap = spawnerLimitedEntities.get(event.getEntityType());
-            }
-            else {
-                return;
-            }
-            int count = 0;
-            for (Entity otherEntity : event.getLocation().getChunk().getEntities()) {
-                if (otherEntity.getType() == event.getEntityType()) {
-                    ++count;
-                    if (count >= cap) {
-                        break;
-                    }
-                }
-            }
-            if (count >= cap) {
-                if (debugLimitSpawn) {
-                    getLogger().info("Cancel spawn of " + getMobDescription(event.getEntity()) +
-                                     " (reason = " + event.getSpawnReason().name().toLowerCase() + ", cap = " + cap + ")");
-                }
+        }
 
-                // See: https://github.com/NerdNu/NerdBugs/issues/180
-                // Trying remove() instead since we already use that.
-                event.getEntity().remove();
+        // Villager breeding has a spawn reason of SpawnReason.DEFAULT
+        // or SpawnReason.BREEDING depending on CraftBukkit version.
+        boolean doLimitNaturalSpawn = limitNaturalSpawn &&
+                                      (event.getSpawnReason() == SpawnReason.BREEDING ||
+                                       event.getSpawnReason() == SpawnReason.NATURAL ||
+                                      event.getSpawnReason() == SpawnReason.DEFAULT);
+        boolean doLimitSpawnerSpawn = limitSpawnerSpawn && event.getSpawnReason() == SpawnReason.SPAWNER;
+        int cap;
+        if (doLimitNaturalSpawn && naturalLimitedEntities.containsKey(event.getEntityType())) {
+            cap = naturalLimitedEntities.get(event.getEntityType());
+        }
+        else if (doLimitSpawnerSpawn && spawnerLimitedEntities.containsKey(event.getEntityType())) {
+            cap = spawnerLimitedEntities.get(event.getEntityType());
+        }
+        else {
+            return;
+        }
+        int count = 0;
+        for (Entity otherEntity : event.getLocation().getChunk().getEntities()) {
+            if (otherEntity.getType() == event.getEntityType()) {
+                ++count;
+                if (count >= cap) {
+                    break;
+                }
             }
         }
+        if (count >= cap) {
+            if (debugLimitSpawn) {
+                getLogger().info("Cancel spawn of " + getMobDescription(event.getEntity()) +
+                                 " (reason = " + event.getSpawnReason().name().toLowerCase() + ", cap = " + cap + ")");
+            }
+
+            // See: https://github.com/NerdNu/NerdBugs/issues/180
+            // Trying remove() instead since we already use that.
+            event.getEntity().remove();
+        }
+
     }
 
     public boolean isFarmAnimal(Entity en) {
