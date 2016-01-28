@@ -259,6 +259,8 @@ public class MobLimiter extends JavaPlugin implements Listener {
         StringBuilder key = new StringBuilder(entity.getType().name());
         if (entity instanceof Sheep) {
             key.append(((Sheep) entity).getColor().name());
+        } else if (entity instanceof Rabbit) {
+            key.append(((Rabbit) entity).getRabbitType().name());
         }
         return key.toString().toLowerCase();
     }
@@ -454,6 +456,24 @@ public class MobLimiter extends JavaPlugin implements Listener {
                             message.append(ChatColor.YELLOW + "sheep*: " + ChatColor.GRAY
                                 + getConfig().getInt("sheepwhite"));                                
                         }
+
+                // same for rabbits
+
+            if ((getConfig().getInt("rabbitbrown") == getConfig().getInt("rabbitwhite")) &&
+                    (getConfig().getInt("rabbitwhite") == getConfig().getInt("rabbitblack")) &&
+                    (getConfig().getInt("rabbitblack") == getConfig().getInt("rabbitblack_and_white")) &&
+                    (getConfig().getInt("rabbitblack_and_white") == getConfig().getInt("rabbitgold")) &&
+                    (getConfig().getInt("rabbitgold") == getConfig().getInt("rabbitsalt_and_pepper")) &&
+                    (getConfig().getInt("rabbitsalt_and_pepper") == getConfig().getInt("rabbitthe_killer_bunny")))
+            {
+                message.append(ChatColor.YELLOW + " rabbits: " + ChatColor.GRAY
+                        + getConfig().getInt("rabbitbrown"));
+            }
+            else
+            {
+                message.append(ChatColor.YELLOW + " rabbits*: " + ChatColor.GRAY
+                        + getConfig().getInt("rabbitbrown"));
+            }
                 
             message.append(ChatColor.YELLOW + " chicken: " + ChatColor.GRAY 
                     + getConfig().getInt("chicken"));
@@ -467,8 +487,6 @@ public class MobLimiter extends JavaPlugin implements Listener {
                     + getConfig().getInt("pig"));
             message.append(ChatColor.YELLOW + " wolf: " + ChatColor.GRAY 
                     + getConfig().getInt("wolf"));
-            message.append(ChatColor.YELLOW + " rabbit: " + ChatColor.GRAY
-                    + getConfig().getInt("rabbit"));
             message.append(ChatColor.YELLOW + " blaze: " + ChatColor.GRAY 
                     + getConfig().getInt("blaze"));
             message.append(ChatColor.YELLOW + " cave_spider: " + ChatColor.GRAY 
