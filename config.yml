@@ -1,0 +1,24 @@
+radius: 3 #The "view distance" to check for mobs, as a chunk radius
+debug: false
+
+
+#Default limits if none are specified for a given mob type
+#"-1" will be accepted as disabling the limit
+default:
+  age: 18000 #15 minutes in ticks
+  max: 200 #200 in "view distance"
+  chunk_max: 50 #50 in a single chunk
+  cull: 4 #cull mobs down to this maximum on chunk unload
+
+
+#Individual mob type limits
+limits:
+  skeleton:
+    max: 100
+    chunkMax: 30
+    age: 12000 #10 minutes in ticks
+  cow:
+    chunkMax: 75
+    age: 12000 #10 minutes in ticks
+  horse:
+    age: -1 #disable age limit
