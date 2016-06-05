@@ -1,9 +1,7 @@
 name: MobLimiter
 version: ${project.version}
-description: ${project.description}
-
-author: Travis Watkins
-website: ${project.url}
+description: Control the mob population
+authors: ["Travis Watkins", "redwall_hp"]
 
 main: nu.nerd.moblimiter.MobLimiter
 
@@ -11,7 +9,7 @@ commands:
     moblimiter:
         description: Gives information about MobLimiter
 permissions:
-    moblimit.cull:
+    moblimiter.cull:
         description: Access to cull command
         default: op
     moblimiter.check:

@@ -1,63 +1,33 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+		 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
+
+
 	<groupId>nu.nerd</groupId>
 	<artifactId>MobLimiter</artifactId>
-	<version>1.1.8</version>
-	<packaging>jar</packaging>
-	<name>MobLimiter</name>
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-	</properties>
+	<version>2.0.0</version>
 
-    <dependencies>
-        <dependency>
-            <groupId>org.spigotmc</groupId>
-            <artifactId>spigot-api</artifactId>
-            <version>1.8-R0.1-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>org.bukkit</groupId>
-            <artifactId>bukkit</artifactId>
-            <version>1.8-R0.1-SNAPSHOT</version>
-        </dependency>
-    </dependencies>
 
-	<distributionManagement>
+	<repositories>
 		<repository>
-			<id>repobo-rel</id>
-			<name>repo.bukkit.org Releases</name>
-			<url>http://repo.bukkit.org/content/repositories/releases/</url>
+			<id>spigot-repo</id>
+			<url>https://hub.spigotmc.org/nexus/content/groups/public/</url>
 		</repository>
-		<snapshotRepository>
-			<id>repobo-snap</id>
-			<name>repo.bukkit.org Snapshots</name>
-			<url>http://repo.bukkit.org/content/repositories/snapshots/</url>
-		</snapshotRepository>
-	</distributionManagement>
+	</repositories>
 
-    <repositories>
-        <repository>
-            <id>spigot-repo</id>
-            <url>https://hub.spigotmc.org/nexus/content/groups/public/</url>
-        </repository>
-    </repositories>
 
-	<pluginRepositories>
-		<pluginRepository>
-			<id>bukkit-plugins</id>
-			<url>http://repo.bukkit.org/content/groups/public</url>
-		</pluginRepository>
-	</pluginRepositories>
-	<description>Limit mobs per chunk</description>
-	<url>https://github.com/nerdnu/MobLimiter</url>
-	<scm>
-		<connection>scm:git:https://github.com/nerdnu/MobLimiter.git</connection>
-		<developerConnection>scm:git:https://github.com/nerdnu/MobLimiter.git</developerConnection>
-		<url>https://github.com/nerdnu/MobLimiter</url>
-	</scm>
+	<dependencies>
+		<dependency>
+			<groupId>org.spigotmc</groupId>
+			<artifactId>spigot-api</artifactId>
+			<version>1.9-R0.1-SNAPSHOT</version>
+		</dependency>
+	</dependencies>
+
+
 	<build>
-		<sourceDirectory>${basedir}/src</sourceDirectory>
 		<resources>
 			<resource>
 				<targetPath>.</targetPath>
@@ -66,34 +36,10 @@
 				<includes>
 					<include>plugin.yml</include>
 					<include>config.yml</include>
-					<include>LICENSE</include>
 				</includes>
 			</resource>
 		</resources>
-		<defaultGoal>clean install</defaultGoal>
-		<pluginManagement>
-			<plugins>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-jar-plugin</artifactId>
-					<version>2.1</version>
-					<configuration>
-						<archive>
-							<addMavenDescriptor>false</addMavenDescriptor>
-						</archive>
-						<finalName>MobLimiter-v${project.version}</finalName>
-					</configuration>
-				</plugin>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-compiler-plugin</artifactId>
-					<version>2.0.2</version>
-					<configuration>
-						<source>1.6</source>
-						<target>1.6</target>
-					</configuration>
-				</plugin>
-			</plugins>
-		</pluginManagement>
 	</build>
+
+
 </project>
