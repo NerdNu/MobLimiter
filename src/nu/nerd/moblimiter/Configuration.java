@@ -13,6 +13,8 @@ public class Configuration {
     private MobLimiter plugin;
     private int radius;
     private boolean debug;
+    private int breedingTicks;
+    private int growthTicks;
     private ConfiguredDefaults defaults;
     private HashMap<EntityType, ConfiguredMob> limits;
 
@@ -32,9 +34,11 @@ public class Configuration {
         plugin.reloadConfig();
         this.radius = plugin.getConfig().getInt("radius", 3);
         this.debug = plugin.getConfig().getBoolean("debug", false);
+        this.breedingTicks = plugin.getConfig().getInt("breeding_ticks", 300);
+        this.growthTicks = plugin.getConfig().getInt("growth_ticks", 300);
         this.defaults = new ConfiguredDefaults(plugin.getConfig());
-        this.limits = new HashMap<EntityType, ConfiguredMob>();
 
+        this.limits = new HashMap<EntityType, ConfiguredMob>();
         ConfigurationSection mobLimits = plugin.getConfig().getConfigurationSection("limits");
         if (mobLimits != null) {
             for (String key : mobLimits.getKeys(false)) {
@@ -64,6 +68,22 @@ public class Configuration {
      */
     public boolean debug() {
         return debug;
+    }
+
+
+    /**
+     * Ticks until a farm animal is ready to breed again.
+     */
+    public int getBreedingTicks() {
+        return breedingTicks;
+    }
+
+
+    /**
+     * Ticks until a farm animal grows up.
+     */
+    public int getGrowthTicks() {
+        return growthTicks;
     }
 
 
