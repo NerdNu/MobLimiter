@@ -4,7 +4,7 @@ debug: false
 
 #Default limits if none are specified for a given mob type
 #"-1" will be accepted as disabling the limit
-default:
+defaults:
   age: 18000 #15 minutes in ticks
   max: 200 #200 in "view distance"
   chunk_max: 50 #50 in a single chunk
