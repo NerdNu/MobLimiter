@@ -21,6 +21,7 @@ public class MobLimiter extends JavaPlugin {
         chunkUnloadLimiter = new ChunkUnloadLimiter();
         new AgeLimiter();
         new SpawnLimiter();
+        new BreedingListener();
     }
 
 

@@ -71,6 +71,11 @@ public class EntityHelper {
     }
 
 
+    /**
+     * Return details about an entity for debugging
+     * @param entity the entity
+     * @return String representation of the mob name and location
+     */
     public static String getMobDescription(Entity entity) {
         String type = entity.getType().toString();
         String world = entity.getLocation().getWorld().getName();
