@@ -12,14 +12,20 @@ public class MobLimiter extends JavaPlugin {
 
     public static MobLimiter instance;
     private Configuration configuration;
+    private ChunkUnloadLimiter chunkUnloadLimiter;
 
 
     public void onEnable() {
         MobLimiter.instance = this;
         configuration = new Configuration();
+        chunkUnloadLimiter = new ChunkUnloadLimiter();
         new AgeLimiter();
         new SpawnLimiter();
-        new ChunkUnloadLimiter();
+    }
+
+
+    public void onDisable() {
+        chunkUnloadLimiter.removeAllMobs();
     }
 
 

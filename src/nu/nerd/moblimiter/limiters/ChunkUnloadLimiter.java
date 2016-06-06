@@ -4,6 +4,7 @@ import nu.nerd.moblimiter.EntityHelper;
 import nu.nerd.moblimiter.MobLimiter;
 import nu.nerd.moblimiter.configuration.ConfiguredMob;
 import org.bukkit.Chunk;
+import org.bukkit.World;
 import org.bukkit.entity.Animals;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -44,7 +45,7 @@ public class ChunkUnloadLimiter implements Listener {
      * This is the default behavior from MobLimiter 1.x.
      * @param chunk The chunk to cull mobs in
      */
-    public void removeMobs(Chunk chunk) {
+    private void removeMobs(Chunk chunk) {
         Map<String, Integer> count = new HashMap<String, Integer>();
         for (Entity entity : chunk.getEntities()) {
 
@@ -74,6 +75,18 @@ public class ChunkUnloadLimiter implements Listener {
                 }
             }
 
+        }
+    }
+
+
+    /**
+     * Run removeMobs() on all loaded chunks
+     */
+    public void removeAllMobs() {
+        for (World world : plugin.getServer().getWorlds()) {
+            for (Chunk chunk : world.getLoadedChunks()) {
+                removeMobs(chunk);
+            }
         }
     }
 
