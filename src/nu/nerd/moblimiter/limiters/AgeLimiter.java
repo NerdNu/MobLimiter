@@ -62,7 +62,7 @@ public class AgeLimiter extends BukkitRunnable {
             // Remove mobs
             ConfiguredMob limits = plugin.getConfiguration().getLimits(entity.getType());
             if (entity.getTicksLived() > limits.getAge() && limits.getAge() > -1) {
-                entity.remove();
+                ((LivingEntity) entity).damage(1000); // Kill the entity and drop its items
                 removed++;
                 if (plugin.getConfiguration().debug()) {
                     plugin.getLogger().info("Removed mob (age limit): " + EntityHelper.getMobDescription(entity));
