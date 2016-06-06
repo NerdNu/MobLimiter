@@ -29,7 +29,13 @@ public class ConfiguredMob {
      */
     public ConfiguredMob(ConfigurationSection mob, ConfiguredDefaults defaults) throws ConfigurationException{
         try {
-            type = EntityType.valueOf(mob.getName().toUpperCase());
+            String name;
+            if (mob.getName().equalsIgnoreCase("dyed_sheep")) {
+                name = "sheep";
+            } else {
+                name = mob.getName();
+            }
+            type = EntityType.valueOf(name.toUpperCase());
             age = mob.getInt("age", defaults.getAge());
             max = mob.getInt("max", defaults.getMax());
             chunkMax = mob.getInt("chunk_max", defaults.getChunkMax());

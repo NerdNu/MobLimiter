@@ -4,10 +4,8 @@ import nu.nerd.moblimiter.EntityHelper;
 import nu.nerd.moblimiter.MobLimiter;
 import nu.nerd.moblimiter.configuration.ConfiguredMob;
 import org.bukkit.Chunk;
-import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -46,8 +44,7 @@ public class SpawnLimiter implements Listener {
     public void onCreatureSpawnEvent(final CreatureSpawnEvent event) {
 
         SpawnReason reason = event.getSpawnReason();
-        EntityType type = event.getEntity().getType();
-        ConfiguredMob limits = plugin.getConfiguration().getLimits(type);
+        ConfiguredMob limits = plugin.getConfiguration().getLimits(event.getEntity());
 
         if (!reasons.contains(reason)) return;
 

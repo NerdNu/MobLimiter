@@ -2,8 +2,11 @@ package nu.nerd.moblimiter.configuration;
 
 
 import nu.nerd.moblimiter.MobLimiter;
+import org.bukkit.DyeColor;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Sheep;
 
 import javax.naming.ConfigurationException;
 import java.util.HashMap;
@@ -17,7 +20,7 @@ public class Configuration {
     private int breedingTicks;
     private int growthTicks;
     private ConfiguredDefaults defaults;
-    private HashMap<EntityType, ConfiguredMob> limits;
+    private HashMap<String, ConfiguredMob> limits;
 
 
     public Configuration() {
@@ -39,14 +42,14 @@ public class Configuration {
         this.growthTicks = plugin.getConfig().getInt("growth_ticks", 300);
         this.defaults = new ConfiguredDefaults(plugin.getConfig());
 
-        this.limits = new HashMap<EntityType, ConfiguredMob>();
+        this.limits = new HashMap<String, ConfiguredMob>();
         ConfigurationSection mobLimits = plugin.getConfig().getConfigurationSection("limits");
         if (mobLimits != null) {
             for (String key : mobLimits.getKeys(false)) {
                 try {
                     ConfigurationSection l = mobLimits.getConfigurationSection(String.format("limits.%s", key));
                     ConfiguredMob mob = new ConfiguredMob(l, defaults);
-                    limits.put(mob.getType(), mob);
+                    limits.put(key.toUpperCase(), mob);
                 } catch (ConfigurationException ex) {
                     plugin.getLogger().warning(ex.getMessage());
                 }
@@ -99,11 +102,15 @@ public class Configuration {
     /**
      * Get the limits for a specific mob type, gracefully falling back to values from the "default" block
      */
-    public ConfiguredMob getLimits(EntityType type) {
-        if (limits.containsKey(type)) {
-            return limits.get(type);
+    public ConfiguredMob getLimits(Entity entity) {
+        String key = entity.getType().toString();
+        if (entity instanceof Sheep && !((Sheep) entity).getColor().equals(DyeColor.WHITE)) {
+            key = "DYED_SHEEP";
+        }
+        if (limits.containsKey(key)) {
+            return limits.get(key);
         } else {
-            return new ConfiguredMob(type, defaults);
+            return new ConfiguredMob(entity.getType(), defaults);
         }
     }
 

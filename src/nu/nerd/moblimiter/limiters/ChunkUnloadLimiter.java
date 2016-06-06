@@ -60,7 +60,7 @@ public class ChunkUnloadLimiter implements Listener {
                 continue;
             }
 
-            ConfiguredMob limits = plugin.getConfiguration().getLimits(entity.getType());
+            ConfiguredMob limits = plugin.getConfiguration().getLimits(entity);
             String key = entity.getType().toString();
             int cap = limits.getCull();
 
