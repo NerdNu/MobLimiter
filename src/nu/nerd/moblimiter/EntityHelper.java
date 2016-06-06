@@ -60,6 +60,7 @@ public class EntityHelper {
      */
     public static boolean isBreedingPair(Entity entity) {
         if (!(entity instanceof Animals)) return false;
+        if (entity instanceof Tameable) return false;
         int count = 0;
         for (Entity e : entity.getLocation().getChunk().getEntities()) {
             if (e.getType().equals(entity.getType())) {
