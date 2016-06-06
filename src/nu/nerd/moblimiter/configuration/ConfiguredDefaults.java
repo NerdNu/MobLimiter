@@ -21,14 +21,14 @@ public class ConfiguredDefaults {
     public ConfiguredDefaults(FileConfiguration config) {
         ConfigurationSection section = config.getConfigurationSection("defaults");
         if (section != null) {
-            age = section.getInt("age", 18000);
-            max = section.getInt("max", 200);
-            chunkMax = section.getInt("chunk_max", 80);
+            age = section.getInt("age", -1);
+            max = section.getInt("max", -1);
+            chunkMax = section.getInt("chunk_max", -1);
             cull = section.getInt("cull", -1);
         } else {
-            age = 18000;
-            max = 200;
-            chunkMax = 80;
+            age = -1;
+            max = -1;
+            chunkMax = -1;
             cull = -1;
         }
     }
