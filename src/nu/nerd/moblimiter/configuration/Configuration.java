@@ -1,6 +1,7 @@
-package nu.nerd.moblimiter;
+package nu.nerd.moblimiter.configuration;
 
 
+import nu.nerd.moblimiter.MobLimiter;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.EntityType;
 

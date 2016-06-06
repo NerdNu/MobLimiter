@@ -1,4 +1,4 @@
-package nu.nerd.moblimiter;
+package nu.nerd.moblimiter.configuration;
 
 
 import org.bukkit.configuration.ConfigurationSection;
