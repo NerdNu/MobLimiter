@@ -51,13 +51,13 @@ public class SpawnLimiter implements Listener {
         if (!reasons.contains(reason)) return;
 
         // Cancel spawn of mobs over the radius limit
-        if (countEntitiesInSpawnRadius(event.getEntity()) >= limits.getMax()) {
+        if (countEntitiesInSpawnRadius(event.getEntity()) >= limits.getMax() && limits.getMax() > -1) {
             log(event.getEntity(), reason, "radius", limits.getMax());
             event.getEntity().remove();
         }
 
         // Cancel spawn of mobs over the chunk limit
-        if (countEntitiesInChunk(event.getEntity()) >= limits.getChunkMax()) {
+        if (countEntitiesInChunk(event.getEntity()) >= limits.getChunkMax() && limits.getChunkMax() > -1) {
             log(event.getEntity(), reason, "chunk", limits.getChunkMax());
             event.getEntity().remove();
         }
@@ -105,6 +105,9 @@ public class SpawnLimiter implements Listener {
     }
 
 
+    /**
+     * Log entity removal for diagnostic purposes if debug mode is on
+     */
     private void log(Entity entity, SpawnReason reason, String capType, int cap) {
         if (!plugin.getConfiguration().debug()) return;
         Location loc = entity.getLocation();
