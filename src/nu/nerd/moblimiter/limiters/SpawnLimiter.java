@@ -1,5 +1,6 @@
 package nu.nerd.moblimiter.limiters;
 
+import nu.nerd.moblimiter.EntityHelper;
 import nu.nerd.moblimiter.MobLimiter;
 import nu.nerd.moblimiter.configuration.ConfiguredMob;
 import org.bukkit.Chunk;
@@ -110,10 +111,7 @@ public class SpawnLimiter implements Listener {
      */
     private void log(Entity entity, SpawnReason reason, String capType, int cap) {
         if (!plugin.getConfiguration().debug()) return;
-        Location loc = entity.getLocation();
-        String type = entity.getType().toString();
-        String world = loc.getWorld().getName();
-        String mob = String.format("%s at %s,%d,%d,%d", type, world, loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
+        String mob = EntityHelper.getMobDescription(entity);
         String details = String.format("[reason: %s, cap type: %s, cap: %d]", reason.toString(), capType, cap);
         String msg = String.format("Cancelled spawn of %s %s", mob, details);
         plugin.getLogger().info(msg);

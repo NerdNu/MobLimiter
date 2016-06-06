@@ -1,11 +1,11 @@
 package nu.nerd.moblimiter.limiters;
 
 import nu.nerd.moblimiter.MobLimiter;
+import nu.nerd.moblimiter.EntityHelper;
 import nu.nerd.moblimiter.configuration.ConfiguredMob;
 import org.bukkit.Chunk;
 import org.bukkit.World;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.*;
 import org.bukkit.scheduler.BukkitRunnable;
 
 
@@ -32,6 +32,9 @@ public class AgeLimiter extends BukkitRunnable {
                 sweepChunk(chunk);
             }
         }
+        if (plugin.getConfiguration().debug()) {
+            plugin.getLogger().info(String.format("Age limit sweep removed %d entities", removed));
+        }
     }
 
 
@@ -40,15 +43,32 @@ public class AgeLimiter extends BukkitRunnable {
      * @param chunk the chunk to check
      */
     private void sweepChunk(Chunk chunk) {
-        //todo: special mobs
-        //todo: save breeding pairs of farm animals
         for (Entity entity : chunk.getEntities()) {
-            if (!(entity instanceof LivingEntity)) continue; //skip non-living entities like item frames
+
+            // Only Animals and Monsters are eligible for removal
+            if (entity.isDead() || !(entity instanceof Animals || entity instanceof Monster)) continue;
+
+            // Exempt special mobs
+            if (EntityHelper.isSpecialMob((LivingEntity) entity)) {
+                if (plugin.getConfiguration().debug()) {
+                    plugin.getLogger().info("Special mob exempted from removal: " + EntityHelper.getMobDescription(entity));
+                }
+                continue;
+            }
+
+            // Leave two of any farm animals
+            if (EntityHelper.isBreedingPair(entity)) continue;
+
+            // Remove mobs
             ConfiguredMob limits = plugin.getConfiguration().getLimits(entity.getType());
             if (entity.getTicksLived() > limits.getAge() && limits.getAge() > -1) {
                 entity.remove();
                 removed++;
+                if (plugin.getConfiguration().debug()) {
+                    plugin.getLogger().info("Removed mob (age limit): " + EntityHelper.getMobDescription(entity));
+                }
             }
+
         }
     }
 
