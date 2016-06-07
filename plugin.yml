@@ -9,6 +9,12 @@ permissions:
   moblimiter.reload:
     description: Access to reload command
     default: op
+  moblimiter.count:
+    description: Access to count command
+    default: op
+  moblimiter.limits:
+    description: Access to limits command
+    default: op
 
 commands:
   moblimiter:

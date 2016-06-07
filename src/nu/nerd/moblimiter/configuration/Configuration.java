@@ -46,7 +46,7 @@ public class Configuration {
         if (mobLimits != null) {
             for (String key : mobLimits.getKeys(false)) {
                 try {
-                    ConfigurationSection l = mobLimits.getConfigurationSection(String.format("limits.%s", key));
+                    ConfigurationSection l = mobLimits.getConfigurationSection(key);
                     if (l != null) {
                         ConfiguredMob mob = new ConfiguredMob(l, defaults);
                         limits.put(key.toUpperCase(), mob);
