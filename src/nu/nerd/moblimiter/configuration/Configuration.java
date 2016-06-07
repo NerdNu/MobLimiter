@@ -47,8 +47,10 @@ public class Configuration {
             for (String key : mobLimits.getKeys(false)) {
                 try {
                     ConfigurationSection l = mobLimits.getConfigurationSection(String.format("limits.%s", key));
-                    ConfiguredMob mob = new ConfiguredMob(l, defaults);
-                    limits.put(key.toUpperCase(), mob);
+                    if (l != null) {
+                        ConfiguredMob mob = new ConfiguredMob(l, defaults);
+                        limits.put(key.toUpperCase(), mob);
+                    }
                 } catch (ConfigurationException ex) {
                     plugin.getLogger().warning(ex.getMessage());
                 }

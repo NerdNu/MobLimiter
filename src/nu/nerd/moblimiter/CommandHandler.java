@@ -1,14 +1,11 @@
 package nu.nerd.moblimiter;
 
 
-import nu.nerd.moblimiter.configuration.ConfiguredMob;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.util.ChatPaginator;
-
-import java.util.Map;
 
 public class CommandHandler implements CommandExecutor {
 
@@ -45,7 +42,7 @@ public class CommandHandler implements CommandExecutor {
                 + ChatColor.GOLD + " in order to manage the "
                 + "amount of mobs on the server, as too many mobs creates lag which affects "
                 + "everyone. MobLimiter uses several methods to manage the mob population, depending on how" +
-                "it is configured:\n");
+                " it is configured:\n");
 
         msg.append(ChatColor.YELLOW);
         msg.append("1. Chunk unload culling\n");
