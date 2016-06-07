@@ -5,7 +5,7 @@ debug: false
 
 
 defaults:
-  age: 24000
+  age: -1
   max: 200
   chunk_max: 50
   cull: 4
