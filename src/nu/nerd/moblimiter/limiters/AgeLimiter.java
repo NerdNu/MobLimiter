@@ -57,14 +57,11 @@ public class AgeLimiter extends BukkitRunnable {
             }
 
             // Leave two of any farm animals
-            if (EntityHelper.isBreedingPair(entity)) {
-                plugin.getLogger().info("Retaining breeding pair for animal: " + EntityHelper.getMobDescription(entity));
-                continue;
-            }
+            if (EntityHelper.isBreedingPair(entity)) continue;
 
             // Remove mobs
             ConfiguredMob limits = plugin.getConfiguration().getLimits(entity);
-            if (entity.getTicksLived() > limits.getAge() && limits.getAge() > -1) {
+            if (!entity.isDead() && entity.getTicksLived() > limits.getAge() && limits.getAge() > -1) {
                 ((LivingEntity) entity).damage(1000); // Kill the entity and drop its items
                 removed++;
                 if (plugin.getConfiguration().debug()) {

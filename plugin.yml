@@ -6,6 +6,13 @@ authors: ["Travis Watkins", "redwall_hp"]
 main: nu.nerd.moblimiter.MobLimiter
 
 permissions:
+  moblimiter.*:
+    description: Access all commands
+    default: op
+    children:
+      moblimiter.reload: true
+      moblimiter.count: true
+      moblimiter.limits: true
   moblimiter.reload:
     description: Access to reload command
     default: op

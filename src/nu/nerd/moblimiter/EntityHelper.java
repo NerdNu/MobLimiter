@@ -1,6 +1,7 @@
 package nu.nerd.moblimiter;
 
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.*;
@@ -63,7 +64,7 @@ public class EntityHelper {
         if (entity instanceof Tameable) return false;
         int count = 0;
         for (Entity e : entity.getLocation().getChunk().getEntities()) {
-            if (e.getType().equals(entity.getType())) {
+            if (e.getType().equals(entity.getType()) && !e.isDead()) {
                 count++;
             }
         }
