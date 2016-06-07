@@ -1,26 +1,50 @@
-radius: 3 #The "view distance" to check for mobs, as a chunk radius
-breeding_ticks: 400 #Farm animal breeding cooldown in ticks (-1 to disable)
-growth_ticks: 400 #Ticks for a farm animal to grow up (-1 to disable)
+radius: 3
+breeding_ticks: 400
+growth_ticks: 400
 debug: false
 
 
-#Default limits if none are specified for a given mob type
-#"-1" will be accepted as disabling the limit
 defaults:
-  age: 18000 #15 minutes in ticks
-  max: 200 #200 in "view distance"
-  chunk_max: 50 #50 in a single chunk
-  cull: 4 #cull mobs down to this maximum on chunk unload
+  age: 24000
+  max: 200
+  chunk_max: 50
+  cull: 4
 
 
-#Individual mob type limits
 limits:
-  skeleton:
-    max: 100
-    chunkMax: 30
-    age: 12000 #10 minutes in ticks
-  cow:
-    chunkMax: 75
-    age: 12000 #10 minutes in ticks
+  blaze:
+    age: 12000
+    cull: 0
+  cave_spider:
+    age: 12000
+    cull: 2
+  enderman:
+    age: 18000
+    cull: 0
+  dyed_sheep:
+    cull: 2
   horse:
-    age: -1 #disable age limit
+    age: -1
+  guardian:
+    age: 12000
+    max: 100
+    chunk_max: 25
+  ocelot:
+    cull: 8
+  rabbit:
+    cull: 8
+  silverfish:
+    cull: 6
+  spider:
+    age: 12000
+    cull: 2
+  squid:
+    age: 12000
+    max: 80
+    chunk_max: 5
+    cull: 1
+  villager:
+    chunk_max: 20
+    age: -1
+  wolf:
+    cull: 8
