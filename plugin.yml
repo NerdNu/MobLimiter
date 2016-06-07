@@ -5,6 +5,11 @@ authors: ["Travis Watkins", "redwall_hp"]
 
 main: nu.nerd.moblimiter.MobLimiter
 
+permissions:
+  moblimiter.reload:
+    description: Access to reload command
+    default: op
+
 commands:
-    moblimiter:
-        description: Gives information about MobLimiter
+  moblimiter:
+    description: Gives information about MobLimiter

@@ -20,8 +20,19 @@ public class CommandHandler implements CommandExecutor {
 
 
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-        infoText(sender, cmd, args);
+        if (args.length == 1 && args[0].equalsIgnoreCase("reload")) {
+            reloadConfig(sender);
+        } else {
+            infoText(sender, cmd, args);
+        }
         return true;
+    }
+
+
+    private void reloadConfig(CommandSender sender) {
+        if (!sender.hasPermission("moblimiter.reload")) return;
+        plugin.getConfiguration().load();
+        sender.sendMessage(ChatColor.GOLD + "MobLimiter config reloaded");
     }
 
 
