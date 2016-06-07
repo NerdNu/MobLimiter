@@ -77,7 +77,7 @@ public class SpawnLimiter implements Listener {
             for (int z = start.getZ() - radius; z <= start.getZ() + radius; z++) {
                 Chunk c = world.getChunkAt(x, z);
                 for (Entity e : c.getEntities()) {
-                    if (e.getType() == entity.getType()) {
+                    if (e.getType() == entity.getType() && !e.isDead()) {
                         count++;
                     }
                 }
@@ -95,7 +95,7 @@ public class SpawnLimiter implements Listener {
     private int countEntitiesInChunk(Entity entity) {
         int count = 0;
         for (Entity e : entity.getLocation().getChunk().getEntities()) {
-            if (e.getType() == entity.getType()) {
+            if (e.getType() == entity.getType() && !e.isDead()) {
                 count++;
             }
         }
