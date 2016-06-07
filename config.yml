@@ -1,6 +1,6 @@
 radius: 3 #The "view distance" to check for mobs, as a chunk radius
-breeding_ticks: 300 #Farm animal breeding cooldown in ticks (-1 to disable)
-growth_ticks: 300 #Ticks for a farm animal to grow up (-1 to disable)
+breeding_ticks: 400 #Farm animal breeding cooldown in ticks (-1 to disable)
+growth_ticks: 400 #Ticks for a farm animal to grow up (-1 to disable)
 debug: false
 
 
