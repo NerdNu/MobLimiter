@@ -8,11 +8,3 @@ main: nu.nerd.moblimiter.MobLimiter
 commands:
     moblimiter:
         description: Gives information about MobLimiter
-permissions:
-    moblimiter.cull:
-        description: Access to cull command
-        default: op
-    moblimiter.check:
-        description: Check if a mob is special
-        default: op
-

@@ -22,6 +22,7 @@ public class MobLimiter extends JavaPlugin {
         new AgeLimiter();
         new SpawnLimiter();
         new BreedingListener();
+        new CommandHandler();
     }
 
 

@@ -5,7 +5,6 @@ import nu.nerd.moblimiter.MobLimiter;
 import org.bukkit.DyeColor;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Sheep;
 
 import javax.naming.ConfigurationException;
@@ -112,6 +111,11 @@ public class Configuration {
         } else {
             return new ConfiguredMob(entity.getType(), defaults);
         }
+    }
+
+
+    public HashMap<String, ConfiguredMob> getAllLimits() {
+        return limits;
     }
 
 
