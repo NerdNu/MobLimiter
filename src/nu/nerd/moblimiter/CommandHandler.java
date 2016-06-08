@@ -224,12 +224,16 @@ public class CommandHandler implements CommandExecutor {
         int nearby = radCounts.get(entity.getType().toString());
         int inChunk = chunkCounts.get(entity.getType().toString());
         boolean isSpecial = EntityHelper.isSpecialMob(entity);
+        boolean isCullable = !entity.isDead() && (entity instanceof Animals || entity instanceof Monster);
+        boolean canSpawnChunk = (limits.getChunkMax() > inChunk || limits.getChunkMax() < 0);
+        boolean canSpawnNearby = (limits.getMax() > nearby || limits.getMax() < 0);
+        boolean moreCanSpawn = canSpawnChunk && canSpawnNearby;
 
         sender.sendMessage(ChatColor.GOLD + "---");
 
         StringBuilder title = new StringBuilder(ChatColor.GOLD + entity.getType().toString());
         title.append(ChatColor.GRAY);
-        title.append(String.format(" (%d nearby, %d in chunk)", nearby, inChunk));
+        title.append(String.format(" (%d/%d nearby, %d/%d in chunk)", nearby, limits.getMax(), inChunk, limits.getChunkMax()));
         sender.sendMessage(title.toString());
 
         String ageStr;
@@ -243,8 +247,12 @@ public class CommandHandler implements CommandExecutor {
             ageStr = "Not Limited";
         }
 
+        String chunkCullStr = (limits.getCull() > -1 && isCullable) ? String.format("%d", limits.getCull()) : "Unlimited";
+
         sender.sendMessage(String.format("Age: %s%s", ChatColor.GRAY, ageStr));
         sender.sendMessage(String.format("Is Special: %s%b", ChatColor.GRAY, isSpecial));
+        sender.sendMessage(String.format("Chunk Unload Cap: %s%s", ChatColor.GRAY, chunkCullStr));
+        sender.sendMessage(String.format("More Can Spawn: %s%b", ChatColor.GRAY, moreCanSpawn));
 
         sender.sendMessage(ChatColor.GOLD + "---");
 
