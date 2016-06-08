@@ -101,3 +101,18 @@ The criteria include:
 
 * Any mob that is holding an item, as it may have picked up a player's equipment.
 
+
+### Commands
+
+* `/moblimiter` — Prints a description of what MobLimiter does. Available to all users.
+
+* `/moblimiter reload` — Reload the plugin configuration. Requires `moblimiter.reload`.
+
+* `/moblimiter count` — Count all living entities in your chunk and view radius. Requires `moblimiter.count`.
+
+* `/moblimiter.limits` — Print all configured limits. Requires `moblimiter.limits`.
+
+* `/moblimiter.check` — Inspect the mob you're looking at, printing its age, limits and statuses. Requires `moblimiter.check`.
+
+All commands can be accessed with the `moblimiter.*` permission node.
+
