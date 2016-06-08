@@ -110,9 +110,9 @@ The criteria include:
 
 * `/moblimiter count` — Count all living entities in your chunk and view radius. Requires `moblimiter.count`.
 
-* `/moblimiter.limits` — Print all configured limits. Requires `moblimiter.limits`.
+* `/moblimiter limits` — Print all configured limits. Requires `moblimiter.limits`.
 
-* `/moblimiter.check` — Inspect the mob you're looking at, printing its age, limits and statuses. Requires `moblimiter.check`.
+* `/moblimiter check` — Inspect the mob you're looking at, printing its age, limits and statuses. Requires `moblimiter.check`.
 
 All commands can be accessed with the `moblimiter.*` permission node.
 
