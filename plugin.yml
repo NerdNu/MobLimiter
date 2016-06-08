@@ -13,6 +13,7 @@ permissions:
       moblimiter.reload: true
       moblimiter.count: true
       moblimiter.limits: true
+      moblimiter.check: true
   moblimiter.reload:
     description: Access to reload command
     default: op
@@ -21,6 +22,9 @@ permissions:
     default: op
   moblimiter.limits:
     description: Access to limits command
+    default: op
+  moblimiter.check:
+    description: Access to check command
     default: op
 
 commands:

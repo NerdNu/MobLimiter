@@ -8,8 +8,7 @@ import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -37,6 +36,9 @@ public class CommandHandler implements CommandExecutor {
         }
         else if (args.length > 0 && args[0].equalsIgnoreCase("limits")) {
             limitsCommand(sender, args);
+        }
+        else if (args.length > 0 && args[0].equalsIgnoreCase("check")) {
+            checkCommand(sender);
         }
         else {
             infoText(sender, cmd, args);
@@ -131,36 +133,14 @@ public class CommandHandler implements CommandExecutor {
             return;
         }
         Player player = (Player) sender;
+        Chunk playerChunk = player.getLocation().getChunk();
+        int chunkRadius = plugin.getConfiguration().getRadius();
 
         // Count mobs in the chunk
-        HashMap<String, Integer> chunkCounts = new HashMap<String, Integer>();
-        for (Entity e : player.getLocation().getChunk().getEntities()) {
-            if (chunkCounts.containsKey(e.getType().toString())) {
-                int count = chunkCounts.get(e.getType().toString()) + 1;
-                chunkCounts.put(e.getType().toString(), count);
-            } else {
-                chunkCounts.put(e.getType().toString(), 1);
-            }
-        }
+        HashMap<String, Integer> chunkCounts = EntityHelper.summarizeMobsInChunk(playerChunk);
 
         // Count mobs in the radius
-        HashMap<String, Integer> radCounts = new HashMap<String, Integer>();
-        int radius = plugin.getConfiguration().getRadius();
-        World world = player.getWorld();
-        Chunk start = player.getLocation().getChunk();
-        for (int x = start.getX() - radius; x <= start.getX() + radius; x++) {
-            for (int z = start.getZ() - radius; z <= start.getZ() + radius; z++) {
-                Chunk c = world.getChunkAt(x, z);
-                for (Entity e : c.getEntities()) {
-                    if (radCounts.containsKey(e.getType().toString())) {
-                        int count = radCounts.get(e.getType().toString()) + 1;
-                        radCounts.put(e.getType().toString(), count);
-                    } else {
-                        radCounts.put(e.getType().toString(), 1);
-                    }
-                }
-            }
-        }
+        HashMap<String, Integer> radCounts = EntityHelper.summarizeMobsInRadius(playerChunk, chunkRadius);
 
         // Print results
         StringBuilder sb = new StringBuilder(ChatColor.GOLD + "Entities in chunk: ");
@@ -215,6 +195,59 @@ public class CommandHandler implements CommandExecutor {
         } else {
             sender.sendMessage("There are no limits configured. All mob types will fall back to the default block.");
         }
+    }
+
+
+    /**
+     * Command to inspect details about the mob the player is looking at
+     */
+    private void checkCommand(CommandSender sender) {
+
+        if (!sender.hasPermission("moblimiter.check")) return;
+        if (!(sender instanceof Player)) {
+            sender.sendMessage("Console can't do that.");
+            return;
+        }
+
+        Player player = (Player) sender;
+        LivingEntity entity = EntityHelper.getMobInLineOfSight(player);
+        if (entity == null || entity.isDead()) {
+            sender.sendMessage("No mob in sight");
+            return;
+        }
+
+        ConfiguredMob limits = plugin.getConfiguration().getLimits(entity);
+        Chunk chunk = entity.getLocation().getChunk();
+        int chunkRadius = plugin.getConfiguration().getRadius();
+        HashMap<String, Integer> chunkCounts = EntityHelper.summarizeMobsInChunk(chunk);
+        HashMap<String, Integer> radCounts = EntityHelper.summarizeMobsInRadius(chunk, chunkRadius);
+        int nearby = radCounts.get(entity.getType().toString());
+        int inChunk = chunkCounts.get(entity.getType().toString());
+        boolean isSpecial = EntityHelper.isSpecialMob(entity);
+
+        sender.sendMessage(ChatColor.GOLD + "---");
+
+        StringBuilder title = new StringBuilder(ChatColor.GOLD + entity.getType().toString());
+        title.append(ChatColor.GRAY);
+        title.append(String.format(" (%d nearby, %d in chunk)", nearby, inChunk));
+        sender.sendMessage(title.toString());
+
+        String ageStr;
+        if (limits.getAge() > -1) {
+            if (!EntityHelper.isBreedingPair(entity)) {
+                ageStr = String.format("%d/%d", entity.getTicksLived(), limits.getAge());
+            } else {
+                ageStr = "Breeding Pair Exempted";
+            }
+        } else {
+            ageStr = "Not Limited";
+        }
+
+        sender.sendMessage(String.format("Age: %s%s", ChatColor.GRAY, ageStr));
+        sender.sendMessage(String.format("Is Special: %s%b", ChatColor.GRAY, isSpecial));
+
+        sender.sendMessage(ChatColor.GOLD + "---");
+
     }
 
 
