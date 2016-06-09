@@ -1,6 +1,7 @@
 package nu.nerd.moblimiter;
 
 
+import nu.nerd.moblimiter.configuration.ConfiguredDefaults;
 import nu.nerd.moblimiter.configuration.ConfiguredMob;
 import org.bukkit.ChatColor;
 import org.bukkit.Chunk;
@@ -173,8 +174,11 @@ public class CommandHandler implements CommandExecutor {
     private void limitsCommand(CommandSender sender, String[] args) {
         if (!sender.hasPermission("moblimiter.limits")) return;
         List<String> lines = new ArrayList<String>();
+        ConfiguredDefaults d = plugin.getConfiguration().getDefaults();
+        String values = String.format("Age: %d Max: %d Chunk: %d Cull: %d", d.getAge(), d.getMax(), d.getChunkMax(), d.getCull());
+        lines.add(String.format("%s%s %s[%s]", ChatColor.GOLD, "DEFAULT", ChatColor.YELLOW, values));
         for (ConfiguredMob l : plugin.getConfiguration().getAllLimits().values()) {
-            String values = String.format("Age: %d Max: %d Chunk: %d Cull: %d", l.getAge(), l.getMax(), l.getChunkMax(), l.getCull());
+            values = String.format("Age: %d Max: %d Chunk: %d Cull: %d", l.getAge(), l.getMax(), l.getChunkMax(), l.getCull());
             lines.add(String.format("%s%s %s[%s]", ChatColor.GOLD, l.getType().toString(), ChatColor.YELLOW, values));
         }
         int page = 1;
