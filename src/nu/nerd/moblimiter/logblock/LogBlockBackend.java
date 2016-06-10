@@ -30,13 +30,14 @@ public class LogBlockBackend {
     /**
      * Log an entity removal to LogBlock with the reason specified
      * @param entity The entity being removed
-     * @param reason The "name" LogBlock will store. e.g. MobLimiterCull
+     * @param name The "name" LogBlock will store. e.g. MobLimiterCull
+     * @param itemId The item to ascribe the kill to. Zero for fist.
      */
-    public void logEntityRemoval(Entity entity, String reason) {
+    public void logEntityRemoval(Entity entity, String name, int itemId) {
         if (lbConsumer != null) {
-            Actor killer = new Actor(reason);
+            Actor killer = new Actor(name);
             Actor victim = Actor.actorFromEntity(entity);
-            lbConsumer.queueKill(entity.getLocation(), killer, victim, 0);
+            lbConsumer.queueKill(entity.getLocation(), killer, victim, itemId);
         }
     }
 

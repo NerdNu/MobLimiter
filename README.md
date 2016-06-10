@@ -26,6 +26,7 @@ Configuration
 * `radius`: The "view distance" to check for mobs, as a chunk radius (e.g. 3 would be a 7x7 area)
 * `breeding_ticks`: Farm animal breeding cooldown in ticks (-1 to disable)
 * `growth_ticks`: Ticks for a farm animal to grow up (-1 to disable)
+* `logblock`: Enable LogBlock support. More below.
 * `debug`: Print debugging info to console
 
 
@@ -100,6 +101,16 @@ The criteria include:
 * Elder guardians. (Regular guardians can be limited, but Elder ones won't be touched.)
 
 * Any mob that is holding an item, as it may have picked up a player's equipment.
+
+
+### LogBlock Integration
+
+If LogBlock is running on the server, you can enable LogBlock integration by setting the `logblock` field to true in the
+ config file. When enabled, mob removals will be tracked as kills in LogBlock when MobLimiter performs a chunk unload 
+ cull or age limit kill.
+
+Age limit kills are logged with a weapon of `watch` and chunk unload culling uses `gold sword`, both using a "player" 
+name of `MobLimiter`.
 
 
 ### Commands

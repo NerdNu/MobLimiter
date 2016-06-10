@@ -27,10 +27,11 @@ public class LogBlockWrapper {
     /**
      * Log an entity removal to LogBlock with the reason specified
      * @param entity The entity being removed
+     * @param itemId The "weapon" used. Zero for first
      */
-    public void logEntityRemoval(Entity entity) {
+    public void logEntityRemoval(Entity entity, int itemId) {
         if (logBlock != null) {
-            logBlock.logEntityRemoval(entity, "MobLimiter");
+            logBlock.logEntityRemoval(entity, "MobLimiter", itemId);
         }
     }
 
