@@ -20,6 +20,20 @@ public class EntityHelper {
 
 
     /**
+     * Check if this is a mob that should ever be limited.
+     * Merely checking Animals or Monster subclassing is not sufficient due to Bukkit inconsistency.
+     * e.g. Armor Stands are LivingEntities, apparently.
+     * So to check whether something is a limitable mob, we check if it's a LivingEntity first and then
+     * apply a blacklist of edge cases such as Armor Stands.
+     * @param entity The entity to check
+     * @return true if the entity is a limitable mob
+     */
+    public static boolean isLimitableMob(Entity entity) {
+        return entity instanceof LivingEntity && !entity.getType().equals(EntityType.ARMOR_STAND);
+    }
+
+
+    /**
      * Check if this is a "special mob" that shouldn't be removed in any circumstance
      * @param entity entity to check
      * @return true if this is a special mob
@@ -125,7 +139,7 @@ public class EntityHelper {
     public static HashMap<String, Integer> summarizeMobsInChunk(Chunk chunk) {
         HashMap<String, Integer> chunkCounts = new HashMap<String, Integer>();
         for (Entity e : chunk.getEntities()) {
-            if (e.isDead() || !(e instanceof LivingEntity)) continue;
+            if (e.isDead() || !isLimitableMob(e)) continue;
             if (chunkCounts.containsKey(e.getType().toString())) {
                 int count = chunkCounts.get(e.getType().toString()) + 1;
                 chunkCounts.put(e.getType().toString(), count);
@@ -150,7 +164,7 @@ public class EntityHelper {
             for (int z = start.getZ() - radius; z <= start.getZ() + radius; z++) {
                 Chunk c = world.getChunkAt(x, z);
                 for (Entity e : c.getEntities()) {
-                    if (e.isDead() || !(e instanceof LivingEntity)) continue;
+                    if (e.isDead() || !isLimitableMob(e)) continue;
                     if (radCounts.containsKey(e.getType().toString())) {
                         int count = radCounts.get(e.getType().toString()) + 1;
                         radCounts.put(e.getType().toString(), count);

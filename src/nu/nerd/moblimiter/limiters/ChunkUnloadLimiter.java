@@ -5,10 +5,7 @@ import nu.nerd.moblimiter.MobLimiter;
 import nu.nerd.moblimiter.configuration.ConfiguredMob;
 import org.bukkit.Chunk;
 import org.bukkit.World;
-import org.bukkit.entity.Animals;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Monster;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -49,8 +46,8 @@ public class ChunkUnloadLimiter implements Listener {
         Map<String, Integer> count = new HashMap<String, Integer>();
         for (Entity entity : chunk.getEntities()) {
 
-            // Only Animals and Monsters are eligible for removal
-            if (entity.isDead() || !(entity instanceof Animals || entity instanceof Monster)) continue;
+            // Constrain entities to be removed to limitable mobs, excluding villagers
+            if (entity.isDead() || !EntityHelper.isLimitableMob(entity) || entity instanceof Villager) continue;
 
             // Exempt special mobs
             if (EntityHelper.isSpecialMob((LivingEntity) entity)) {
