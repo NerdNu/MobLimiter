@@ -15,6 +15,10 @@
 			<id>spigot-repo</id>
 			<url>https://hub.spigotmc.org/nexus/content/groups/public/</url>
 		</repository>
+        <repository>
+            <id>md_5-releases</id>
+            <url>http://repo.md-5.net/content/repositories/releases/</url>
+        </repository>
 	</repositories>
 
 
@@ -24,6 +28,19 @@
 			<artifactId>spigot-api</artifactId>
 			<version>1.9-R0.1-SNAPSHOT</version>
 		</dependency>
+        <dependency>
+            <!-- This is required because LogBlock is a pain -->
+            <groupId>de.diddiz</groupId>
+            <artifactId>questioner</artifactId>
+            <version>${project.version}</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/vendor/LogBlockQuestioner.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>de.diddiz</groupId>
+            <artifactId>logblock</artifactId>
+            <version>1.94</version>
+        </dependency>
 	</dependencies>
 
 

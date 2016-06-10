@@ -18,6 +18,7 @@ public class Configuration {
     private boolean debug;
     private int breedingTicks;
     private int growthTicks;
+    private boolean logBlock;
     private ConfiguredDefaults defaults;
     private HashMap<String, ConfiguredMob> limits;
 
@@ -40,6 +41,7 @@ public class Configuration {
         this.breedingTicks = plugin.getConfig().getInt("breeding_ticks", 300);
         this.growthTicks = plugin.getConfig().getInt("growth_ticks", 300);
         this.defaults = new ConfiguredDefaults(plugin.getConfig());
+        this.logBlock = plugin.getConfig().getBoolean("logblock", false);
 
         this.limits = new HashMap<String, ConfiguredMob>();
         ConfigurationSection mobLimits = plugin.getConfig().getConfigurationSection("limits");
@@ -89,6 +91,15 @@ public class Configuration {
      */
     public int getGrowthTicks() {
         return growthTicks;
+    }
+
+
+    /**
+     * Whether support for LogBlock entity removal logging is enabled
+     * @return true if enabled
+     */
+    public boolean logBlockEnabled() {
+        return logBlock;
     }
 
 
