@@ -8,10 +8,7 @@ import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Mob-related methods that may be shared across classes
@@ -29,7 +26,10 @@ public class EntityHelper {
      * @return true if the entity is a limitable mob
      */
     public static boolean isLimitableMob(Entity entity) {
-        return entity instanceof LivingEntity && !entity.getType().equals(EntityType.ARMOR_STAND);
+        List<EntityType> blacklist = new ArrayList<EntityType>();
+        blacklist.add(EntityType.ARMOR_STAND);
+        blacklist.add(EntityType.PLAYER);
+        return entity instanceof LivingEntity && !blacklist.contains(entity.getType());
     }
 
 
