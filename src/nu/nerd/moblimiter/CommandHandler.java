@@ -214,7 +214,7 @@ public class CommandHandler implements CommandExecutor {
 
         Player player = (Player) sender;
         LivingEntity entity = EntityHelper.getMobInLineOfSight(player);
-        if (entity == null || entity.isDead()) {
+        if (entity == null || entity.isDead() || !EntityHelper.isLimitableMob(entity)) {
             sender.sendMessage("No mob in sight");
             return;
         }
