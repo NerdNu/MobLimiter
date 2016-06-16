@@ -22,7 +22,9 @@ limits:
   enderman:
     age: 18000
     cull: 0
-  dyed_sheep:
+  sheep_white:
+    cull: 2
+  sheep_red:
     cull: 2
   horse:
     age: -1
