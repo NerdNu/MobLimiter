@@ -6,7 +6,6 @@ import nu.nerd.moblimiter.configuration.ConfiguredMob;
 import org.bukkit.Chunk;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -72,13 +71,15 @@ public class SpawnLimiter implements Listener {
     private int countEntitiesInSpawnRadius(Entity entity) {
         int count = 0;
         int radius = plugin.getConfiguration().getRadius();
+        ConfiguredMob mob = plugin.getConfiguration().getLimits(entity);
         World world = entity.getWorld();
         Chunk start = entity.getLocation().getChunk();
         for (int x = start.getX() - radius; x <= start.getX() + radius; x++) {
             for (int z = start.getZ() - radius; z <= start.getZ() + radius; z++) {
                 Chunk c = world.getChunkAt(x, z);
                 for (Entity e : c.getEntities()) {
-                    if (e.getType() == entity.getType() && !e.isDead()) {
+                    ConfiguredMob m = plugin.getConfiguration().getLimits(e);
+                    if (m.getKey().equals(mob.getKey()) && !e.isDead()) {
                         count++;
                     }
                 }
@@ -95,8 +96,10 @@ public class SpawnLimiter implements Listener {
      */
     private int countEntitiesInChunk(Entity entity) {
         int count = 0;
+        ConfiguredMob mob = plugin.getConfiguration().getLimits(entity);
         for (Entity e : entity.getLocation().getChunk().getEntities()) {
-            if (e.getType() == entity.getType() && !e.isDead()) {
+            ConfiguredMob m = plugin.getConfiguration().getLimits(e);
+            if (m.getKey().equals(mob.getKey()) && !e.isDead()) {
                 count++;
             }
         }

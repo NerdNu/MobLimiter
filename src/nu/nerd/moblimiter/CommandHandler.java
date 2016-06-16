@@ -178,7 +178,7 @@ public class CommandHandler implements CommandExecutor {
         lines.add(String.format("%s%s %s[%s]", ChatColor.GOLD, "DEFAULT", ChatColor.YELLOW, values));
         for (ConfiguredMob l : plugin.getConfiguration().getAllLimits().values()) {
             values = String.format("Age: %d Max: %d Chunk: %d Cull: %d", l.getAge(), l.getMax(), l.getChunkMax(), l.getCull());
-            lines.add(String.format("%s%s %s[%s]", ChatColor.GOLD, l.getType().toString(), ChatColor.YELLOW, values));
+            lines.add(String.format("%s%s %s[%s]", ChatColor.GOLD, l.getKey(), ChatColor.YELLOW, values));
         }
         int page = 1;
         if (args.length > 1) {
@@ -224,8 +224,8 @@ public class CommandHandler implements CommandExecutor {
         int chunkRadius = plugin.getConfiguration().getRadius();
         HashMap<String, Integer> chunkCounts = EntityHelper.summarizeMobsInChunk(chunk);
         HashMap<String, Integer> radCounts = EntityHelper.summarizeMobsInRadius(chunk, chunkRadius);
-        int nearby = radCounts.get(entity.getType().toString());
-        int inChunk = chunkCounts.get(entity.getType().toString());
+        int nearby = radCounts.get(limits.getKey());
+        int inChunk = chunkCounts.get(limits.getKey());
         boolean isSpecial = EntityHelper.isSpecialMob(entity);
         boolean isCullable = !entity.isDead() && (entity instanceof Animals || entity instanceof Monster);
         boolean canSpawnChunk = (limits.getChunkMax() > inChunk || limits.getChunkMax() < 0);
@@ -234,7 +234,7 @@ public class CommandHandler implements CommandExecutor {
 
         sender.sendMessage(ChatColor.GOLD + "---");
 
-        StringBuilder title = new StringBuilder(ChatColor.GOLD + entity.getType().toString());
+        StringBuilder title = new StringBuilder(ChatColor.GOLD + limits.getKey());
         title.append(ChatColor.GRAY);
         title.append(String.format(" (%d/%d nearby, %d/%d in chunk)", nearby, limits.getMax(), inChunk, limits.getChunkMax()));
         sender.sendMessage(title.toString());

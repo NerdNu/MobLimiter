@@ -1,6 +1,7 @@
 package nu.nerd.moblimiter.configuration;
 
 
+import nu.nerd.moblimiter.MobLimiter;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.EntityType;
 
@@ -13,6 +14,7 @@ import javax.naming.ConfigurationException;
 public class ConfiguredMob {
 
 
+    private String key;
     private EntityType type;
     private int age;
     private int max;
@@ -30,11 +32,12 @@ public class ConfiguredMob {
     public ConfiguredMob(ConfigurationSection mob, ConfiguredDefaults defaults) throws ConfigurationException{
         try {
             String name;
-            if (mob.getName().equalsIgnoreCase("dyed_sheep")) {
-                name = "sheep";
+            if (mob.getName().toUpperCase().startsWith("SHEEP_")) {
+                name = "SHEEP";
             } else {
                 name = mob.getName();
             }
+            key = mob.getName().toUpperCase();
             type = EntityType.valueOf(name.toUpperCase());
             age = mob.getInt("age", defaults.getAge());
             max = mob.getInt("max", defaults.getMax());
@@ -48,17 +51,31 @@ public class ConfiguredMob {
 
     /**
      * Create a dummy ConfiguredMob with default values, for when one isn't actually configured
-     * @param entityType The entity type
+     * @param mobKey The key this mob type would have in the config
      * @param defaults The default values
      */
-    public ConfiguredMob(EntityType entityType, ConfiguredDefaults defaults) {
-        type = entityType;
+    public ConfiguredMob(String mobKey, ConfiguredDefaults defaults) {
+        String name;
+        if (mobKey.toUpperCase().startsWith("SHEEP_")) {
+            name = "SHEEP";
+        } else {
+            name = mobKey.toUpperCase();
+        }
+        key = mobKey.toUpperCase();
+        type = EntityType.valueOf(name.toUpperCase());
         age = defaults.getAge();
         max = defaults.getMax();
         chunkMax = defaults.getChunkMax();
         cull = defaults.getCull();
     }
 
+
+    /**
+     * Get the key identifying this mob classification
+     */
+    public String getKey() {
+        return key;
+    }
 
 
     /**

@@ -55,8 +55,7 @@ defaults:
 The `limits` block allows you to specify limits that apply to individual mob types. These inherit the values defined in
 `defaults`, overriding the values.
 
-Mob types are named using their Bukkit EntityType string, with the exception of `dyed_sheep` targeting sheep that have 
-a dye color applied.
+Mob types are named using their Bukkit EntityType string, with the exception of sheep, which are addressed in the form of `sheep_white` or `sheep_red` so they can be handled individually for farming purposes.
 
 ```
 limits:

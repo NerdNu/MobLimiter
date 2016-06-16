@@ -1,6 +1,8 @@
 package nu.nerd.moblimiter;
 
 
+import nu.nerd.moblimiter.configuration.Configuration;
+import nu.nerd.moblimiter.configuration.ConfiguredMob;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.entity.*;
@@ -82,8 +84,10 @@ public class EntityHelper {
         if (!(entity instanceof Animals)) return false;
         if (entity instanceof Tameable) return false;
         int count = 0;
+        ConfiguredMob mob = getConfiguration().getLimits(entity);
         for (Entity e : entity.getLocation().getChunk().getEntities()) {
-            if (e.getType().equals(entity.getType()) && !e.isDead()) {
+            ConfiguredMob m = getConfiguration().getLimits(e);
+            if (m.getKey().equals(mob.getKey()) && !e.isDead()) {
                 count++;
             }
         }
@@ -140,11 +144,12 @@ public class EntityHelper {
         HashMap<String, Integer> chunkCounts = new HashMap<String, Integer>();
         for (Entity e : chunk.getEntities()) {
             if (e.isDead() || !isLimitableMob(e)) continue;
-            if (chunkCounts.containsKey(e.getType().toString())) {
-                int count = chunkCounts.get(e.getType().toString()) + 1;
-                chunkCounts.put(e.getType().toString(), count);
+            ConfiguredMob mob = getConfiguration().getLimits(e);
+            if (chunkCounts.containsKey(mob.getKey())) {
+                int count = chunkCounts.get(mob.getKey()) + 1;
+                chunkCounts.put(mob.getKey(), count);
             } else {
-                chunkCounts.put(e.getType().toString(), 1);
+                chunkCounts.put(mob.getKey(), 1);
             }
         }
         return chunkCounts;
@@ -165,16 +170,25 @@ public class EntityHelper {
                 Chunk c = world.getChunkAt(x, z);
                 for (Entity e : c.getEntities()) {
                     if (e.isDead() || !isLimitableMob(e)) continue;
-                    if (radCounts.containsKey(e.getType().toString())) {
-                        int count = radCounts.get(e.getType().toString()) + 1;
-                        radCounts.put(e.getType().toString(), count);
+                    ConfiguredMob mob = getConfiguration().getLimits(e);
+                    if (radCounts.containsKey(mob.getKey())) {
+                        int count = radCounts.get(mob.getKey()) + 1;
+                        radCounts.put(mob.getKey(), count);
                     } else {
-                        radCounts.put(e.getType().toString(), 1);
+                        radCounts.put(mob.getKey(), 1);
                     }
                 }
             }
         }
         return radCounts;
+    }
+
+
+    /**
+     * Convenience method to get the plugin configuration
+     */
+    public static Configuration getConfiguration() {
+        return MobLimiter.instance.getConfiguration();
     }
 
 

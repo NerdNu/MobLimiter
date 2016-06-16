@@ -2,7 +2,6 @@ package nu.nerd.moblimiter.configuration;
 
 
 import nu.nerd.moblimiter.MobLimiter;
-import org.bukkit.DyeColor;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Sheep;
@@ -116,13 +115,13 @@ public class Configuration {
      */
     public ConfiguredMob getLimits(Entity entity) {
         String key = entity.getType().toString();
-        if (entity instanceof Sheep && !((Sheep) entity).getColor().equals(DyeColor.WHITE)) {
-            key = "DYED_SHEEP";
+        if (entity instanceof Sheep) {
+            key = key + "_" + ((Sheep) entity).getColor().name().toUpperCase();
         }
         if (limits.containsKey(key)) {
             return limits.get(key);
         } else {
-            return new ConfiguredMob(entity.getType(), defaults);
+            return new ConfiguredMob(key, defaults);
         }
     }
 
