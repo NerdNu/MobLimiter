@@ -48,10 +48,13 @@ public class Configuration {
             for (String key : mobLimits.getKeys(false)) {
                 try {
                     ConfigurationSection l = mobLimits.getConfigurationSection(key);
+                    ConfiguredMob mob;
                     if (l != null) {
-                        ConfiguredMob mob = new ConfiguredMob(l, defaults);
-                        limits.put(key.toUpperCase(), mob);
+                        mob = new ConfiguredMob(l, defaults);
+                    } else {
+                        mob = new ConfiguredMob(key, defaults); //use default values for YAML "key: []" blocks
                     }
+                    limits.put(key.toUpperCase(), mob);
                 } catch (ConfigurationException ex) {
                     plugin.getLogger().warning(ex.getMessage());
                 }

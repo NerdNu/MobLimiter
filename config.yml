@@ -7,37 +7,92 @@ debug: false
 
 defaults:
   age: -1
-  max: 200
+  max: 150
   chunk_max: 50
   cull: 4
 
 
 limits:
+  bat:
+    cull: 6
   blaze:
     age: 12000
     cull: 0
   cave_spider:
     age: 12000
     cull: 2
+  chicken: []
+  cow: []
+  creeper:
+    age: 24000
+    cull: 8
+  ender_dragon: []
   enderman:
     age: 18000
     cull: 0
-  sheep_white:
-    cull: 2
-  sheep_red:
-    cull: 2
-  horse:
-    age: -1
+  endermite:
+    cull: 6
+  ghast:
+    cull: 1
+  giant:
+    cull: -1
   guardian:
     age: 12000
     max: 100
     chunk_max: 25
+    cull: 4
+  horse:
+    age: -1
+  iron_golem: []
+  magma_cube:
+    age: 24000
+  mushroom_cow: []
   ocelot:
     cull: 8
+  pig: []
+  pig_zombie:
+    age: 18000
   rabbit:
     cull: 8
+  sheep_white:
+    cull: 2
+  sheep_orange:
+    cull: 2
+  sheep_magenta:
+    cull: 2
+  sheep_light_blue:
+    cull: 2
+  sheep_yellow:
+    cull: 2
+  sheep_lime:
+    cull: 2
+  sheep_pink:
+    cull: 2
+  sheep_silver:
+    cull: 2
+  sheep_cyan:
+    cull: 2
+  sheep_purple:
+    cull: 2
+  sheep_blue:
+    cull: 2
+  sheep_brown:
+    cull: 2
+  sheep_green:
+    cull: 2
+  sheep_red:
+    cull: 2
+  sheep_black:
+    cull: 2
+  shulker: []
   silverfish:
     cull: 6
+  skeleton:
+    age: 24000
+  slime:
+    age: 24000
+  snowman:
+    cull: -1
   spider:
     age: 12000
     cull: 2
@@ -49,5 +104,12 @@ limits:
   villager:
     chunk_max: 20
     age: -1
+  witch:
+    age: 24000
+    cull: 2
+  wither:
+    cull: -1
   wolf:
     cull: 8
+  zombie:
+    age: 24000

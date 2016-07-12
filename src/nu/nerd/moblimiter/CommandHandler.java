@@ -10,10 +10,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class CommandHandler implements CommandExecutor {
 
@@ -176,7 +173,8 @@ public class CommandHandler implements CommandExecutor {
         ConfiguredDefaults d = plugin.getConfiguration().getDefaults();
         String values = String.format("Age: %d Max: %d Chunk: %d Cull: %d", d.getAge(), d.getMax(), d.getChunkMax(), d.getCull());
         lines.add(String.format("%s%s %s[%s]", ChatColor.GOLD, "DEFAULT", ChatColor.YELLOW, values));
-        for (ConfiguredMob l : plugin.getConfiguration().getAllLimits().values()) {
+        TreeMap<String, ConfiguredMob> limits = new TreeMap<String, ConfiguredMob>(plugin.getConfiguration().getAllLimits());
+        for (ConfiguredMob l : limits.values()) {
             values = String.format("Age: %d Max: %d Chunk: %d Cull: %d", l.getAge(), l.getMax(), l.getChunkMax(), l.getCull());
             lines.add(String.format("%s%s %s[%s]", ChatColor.GOLD, l.getKey(), ChatColor.YELLOW, values));
         }
@@ -190,11 +188,12 @@ public class CommandHandler implements CommandExecutor {
         }
         if (lines.size() > 0) {
             int offset = (page - 1) * 10;
+            int pages = ((lines.size()-1) / 10) + 1;
             for (int i = offset; i <= offset + 9; i++) {
                 if (i >= lines.size()) break;
                 sender.sendMessage(lines.get(i));
             }
-            sender.sendMessage(String.format("%s[Page %d/2]", ChatColor.GRAY, page));
+            sender.sendMessage(String.format("%s[Page %d/%d]", ChatColor.GRAY, page, pages));
         } else {
             sender.sendMessage("There are no limits configured. All mob types will fall back to the default block.");
         }
