@@ -37,8 +37,11 @@ public class CommandHandler implements CommandExecutor {
         else if (args.length > 0 && args[0].equalsIgnoreCase("check")) {
             checkCommand(sender);
         }
+        else if (args.length > 0 && args[0].equalsIgnoreCase("help")) {
+            helpText(sender, cmd, args);
+        }
         else {
-            infoText(sender, cmd, args);
+            commandsList(sender);
         }
         return true;
     }
@@ -55,14 +58,39 @@ public class CommandHandler implements CommandExecutor {
 
 
     /**
-     * When a player runs /moblimiter, print help text
+     * When a player runs /moblimiter with no arguments, list available commands
+     * and guide newbies to /moblimiter help
+     * @param sender
      */
-    private void infoText(CommandSender sender, Command cmd, String[] args) {
+    private void commandsList(CommandSender sender) {
+        StringBuilder msg = new StringBuilder();
+        msg.append("&6&lMobLimiter: Available Commands\n");
+        msg.append("&6/moblimiter help&r - What is MobLimiter and how does it work?\n");
+        if (sender.hasPermission("moblimiter.limits")) {
+            msg.append("&6/moblimiter limits&r - List the limits for each mob type\n");
+        }
+        if (sender.hasPermission("moblimiter.count")) {
+            msg.append("&6/moblimiter count&r - Count entities in the current chunk and radius\n");
+        }
+        if (sender.hasPermission("moblimiter.check")) {
+            msg.append("&6/moblimiter check&r - Inspect limiting details for the mob you're looking at\n");
+        }
+        if (sender.hasPermission("moblimiter.reload")) {
+            msg.append("&6/moblimiter reload&r - Reload configuration from disk\n");
+        }
+        sender.sendMessage(ChatColor.translateAlternateColorCodes('&', msg.toString()));
+    }
+
+
+    /**
+     * When a player runs /moblimiter help, print help text
+     */
+    private void helpText(CommandSender sender, Command cmd, String[] args) {
 
         int num = 1;
-        if (args.length > 0) {
+        if (args.length > 1) {
             try {
-                num = Integer.parseInt(args[0]);
+                num = Integer.parseInt(args[1]);
             } catch (NumberFormatException ex) {
                 num = 1;
             }
@@ -114,7 +142,7 @@ public class CommandHandler implements CommandExecutor {
             sender.sendMessage(msg.toString());
         }
 
-        sender.sendMessage(String.format("[Page %d/2 - /moblimiter #]", num));
+        sender.sendMessage(String.format("[Page %d/2 - /moblimiter help #]", num));
 
     }
 

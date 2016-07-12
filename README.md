@@ -114,7 +114,9 @@ name of `MobLimiter`.
 
 ### Commands
 
-* `/moblimiter` — Prints a description of what MobLimiter does. Available to all users.
+* `/moblimiter` — Lists all subcommands. Available to all users.
+
+* `/moblimiter help` — Prints a description of what MobLimiter does. Available to all users.
 
 * `/moblimiter reload` — Reload the plugin configuration. Requires `moblimiter.reload`.
 
