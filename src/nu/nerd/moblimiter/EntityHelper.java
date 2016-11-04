@@ -120,7 +120,8 @@ public class EntityHelper {
             Entity ent = iterator.next();
             if (!(ent instanceof LivingEntity)) iterator.remove();
         }
-        for (Block block : player.getLineOfSight((Set) null, 6)) {
+        Set<Material> nullSet = null;
+        for (Block block : player.getLineOfSight(nullSet, 6)) {
             if (block.getType() != Material.AIR) break; //view is obstructed
             for (Entity ent : entities) {
                 Vector b = block.getLocation().toVector();
