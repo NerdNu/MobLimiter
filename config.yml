@@ -32,6 +32,7 @@ limits:
     cull: 0
   endermite:
     cull: 6
+  evoker: []
   ghast:
     cull: 1
   giant:
@@ -44,6 +45,8 @@ limits:
   horse:
     age: -1
   iron_golem: []
+  llama:
+    cull: 8
   magma_cube:
     age: 24000
   mushroom_cow: []
@@ -101,9 +104,11 @@ limits:
     max: 80
     chunk_max: 5
     cull: 1
+  vex: []
   villager:
     chunk_max: 20
     age: -1
+  vindicator: []
   witch:
     age: 24000
     cull: 2
