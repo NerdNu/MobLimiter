@@ -18,6 +18,7 @@ public class Configuration {
     private int breedingTicks;
     private int growthTicks;
     private boolean logBlock;
+    private boolean relativeAge;
     private ConfiguredDefaults defaults;
     private HashMap<String, ConfiguredMob> limits;
 
@@ -41,6 +42,7 @@ public class Configuration {
         this.growthTicks = plugin.getConfig().getInt("growth_ticks", 300);
         this.defaults = new ConfiguredDefaults(plugin.getConfig());
         this.logBlock = plugin.getConfig().getBoolean("logblock", false);
+        this.relativeAge = plugin.getConfig().getBoolean("relative_age", false);
 
         this.limits = new HashMap<String, ConfiguredMob>();
         ConfigurationSection mobLimits = plugin.getConfig().getConfigurationSection("limits");
@@ -102,6 +104,15 @@ public class Configuration {
      */
     public boolean logBlockEnabled() {
         return logBlock;
+    }
+
+
+    /**
+     * Whether mobs' age should be relative to the last time they target a player
+     * @return true if enabled
+     */
+    public boolean relativeAgeEnabled() {
+        return relativeAge;
     }
 
 

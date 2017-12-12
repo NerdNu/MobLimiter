@@ -269,7 +269,7 @@ public class CommandHandler implements CommandExecutor {
         String ageStr;
         if (limits.getAge() > -1) {
             if (!EntityHelper.isBreedingPair(entity)) {
-                ageStr = String.format("%d/%d", entity.getTicksLived(), limits.getAge());
+                ageStr = String.format("%d/%d", plugin.getAgeLimiter().adjustedAge(entity), limits.getAge());
             } else {
                 ageStr = "Breeding Pair Exempted";
             }

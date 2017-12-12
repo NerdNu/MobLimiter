@@ -14,6 +14,7 @@ public class MobLimiter extends JavaPlugin {
     public static MobLimiter instance;
     private Configuration configuration;
     private ChunkUnloadLimiter chunkUnloadLimiter;
+    private AgeLimiter ageLimiter;
     private LogBlockWrapper logBlock;
 
 
@@ -21,8 +22,8 @@ public class MobLimiter extends JavaPlugin {
         MobLimiter.instance = this;
         configuration = new Configuration();
         chunkUnloadLimiter = new ChunkUnloadLimiter();
+        ageLimiter = new AgeLimiter();
         logBlock = new LogBlockWrapper();
-        new AgeLimiter();
         new SpawnLimiter();
         new BreedingListener();
         new CommandHandler();
@@ -36,6 +37,11 @@ public class MobLimiter extends JavaPlugin {
 
     public Configuration getConfiguration() {
         return configuration;
+    }
+
+
+    public AgeLimiter getAgeLimiter() {
+        return ageLimiter;
     }
 
 
