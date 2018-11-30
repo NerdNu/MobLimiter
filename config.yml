@@ -47,6 +47,7 @@ limits:
     cull: 4
   horse:
     age: -1
+  illusioner: []
   iron_golem: []
   llama:
     cull: 8
@@ -54,6 +55,8 @@ limits:
     age: 24000
   mushroom_cow: []
   ocelot:
+    cull: 8
+  parrot:
     cull: 8
   phantom: []
   pig: []
