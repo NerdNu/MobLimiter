@@ -23,10 +23,12 @@ limits:
     age: 12000
     cull: 2
   chicken: []
+  cod: []
   cow: []
   creeper:
     age: 24000
     cull: 8
+  dolphin: []
   ender_dragon: []
   enderman:
     age: 18000
@@ -53,11 +55,14 @@ limits:
   mushroom_cow: []
   ocelot:
     cull: 8
+  phantom: []
   pig: []
   pig_zombie:
     age: 18000
+  pufferfish: []
   rabbit:
     cull: 8
+  salmon: []
   sheep_white:
     cull: 2
   sheep_orange:
@@ -105,6 +110,8 @@ limits:
     max: 80
     chunk_max: 5
     cull: 1
+  tropicalfish: []
+  turtle: []
   vex: []
   villager:
     chunk_max: 20
