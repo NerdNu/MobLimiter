@@ -113,7 +113,7 @@ limits:
     max: 80
     chunk_max: 5
     cull: 1
-  tropicalfish: []
+  tropical_fish: []
   turtle: []
   vex: []
   villager:
