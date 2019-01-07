@@ -17,6 +17,9 @@ import java.util.*;
  */
 public class EntityHelper {
 
+    private static final HashSet<EntityType> BLACKLIST = new HashSet<>(Arrays.asList(
+        EntityType.ARMOR_STAND, EntityType.PLAYER
+    ));
 
     /**
      * Check if this is a mob that should ever be limited.
@@ -28,10 +31,7 @@ public class EntityHelper {
      * @return true if the entity is a limitable mob
      */
     public static boolean isLimitableMob(Entity entity) {
-        List<EntityType> blacklist = new ArrayList<EntityType>();
-        blacklist.add(EntityType.ARMOR_STAND);
-        blacklist.add(EntityType.PLAYER);
-        return entity instanceof LivingEntity && !blacklist.contains(entity.getType());
+        return entity instanceof LivingEntity && !BLACKLIST.contains(entity.getType());
     }
 
 
