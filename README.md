@@ -15,7 +15,7 @@ pairs of farm animals if it can, by not killing farm animals if there would be l
 applicable mob type in a "view distance" (as a chunk radius) as well as in an individual chunk and blocking the addition
 of extra mobs beyond the limit.
 
-* **Chunk Unload:** The chunk-unload culling feature of MobLimiter 1.x is still available, if its use is desired.
+* **Entity Unload:** Similar to version 2.0, the new entity-unload system checks for entities unloading within chunks and culls them down to numbers specified in the config, if desired.
 
 
 Configuration
