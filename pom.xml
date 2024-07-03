@@ -12,8 +12,8 @@
 
 	<repositories>
 		<repository>
-			<id>papermc-repo</id>
-			<url>https://papermc.io/repo/repository/maven-public/</url>
+			<id>spigot-repo</id>
+			<url>https://hub.spigotmc.org/nexus/content/groups/public/</url>
 		</repository>
         <repository>
             <id>md_5-releases</id>
@@ -37,9 +37,9 @@
             <version>1.94</version>
         </dependency>
 		<dependency>
-			<groupId>io.papermc.paper</groupId>
-			<artifactId>paper-api</artifactId>
-			<version>1.20.1-R0.1-SNAPSHOT</version>
+			<groupId>org.spigotmc</groupId>
+			<artifactId>spigot-api</artifactId>
+			<version>1.20-R0.1-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 
