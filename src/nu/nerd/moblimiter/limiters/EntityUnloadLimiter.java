@@ -20,7 +20,7 @@ import java.util.Map;
  * Cull applicable mobs on chunk unload.
  * This is based on behavior from the original MobLimiter 1.x.
  */
-public class ChunkUnloadLimiter implements Listener {
+public class EntityUnloadLimiter implements Listener {
 
 
     private MobLimiter plugin;
@@ -28,7 +28,7 @@ public class ChunkUnloadLimiter implements Listener {
     private Chunk chunk;
 
 
-    public ChunkUnloadLimiter() {
+    public EntityUnloadLimiter() {
         plugin = MobLimiter.instance;
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
