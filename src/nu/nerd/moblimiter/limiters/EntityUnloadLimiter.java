@@ -7,11 +7,12 @@ import org.bukkit.Chunk;
 import org.bukkit.World;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.world.ChunkUnloadEvent;
+import org.bukkit.event.world.EntitiesUnloadEvent;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 
@@ -19,32 +20,33 @@ import java.util.Map;
  * Cull applicable mobs on chunk unload.
  * This is based on behavior from the original MobLimiter 1.x.
  */
-public class ChunkUnloadLimiter implements Listener {
+public class EntityUnloadLimiter implements Listener {
 
 
     private MobLimiter plugin;
 
+    private Chunk chunk;
 
-    public ChunkUnloadLimiter() {
+
+    public EntityUnloadLimiter() {
         plugin = MobLimiter.instance;
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
 
-
-    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
-    public void onChunkUnload(final ChunkUnloadEvent event) {
-        removeMobs(event.getChunk());
+    @EventHandler
+    public void onEntitiesUnloaded(EntitiesUnloadEvent event) {
+        removeMobs(event.getEntities());
     }
 
 
     /**
      * Remove excess mobs in a chunk, if chunk unload culling is enabled for the mob type.
      * This is the default behavior from MobLimiter 1.x.
-     * @param chunk The chunk to cull mobs in
+     * @param entities The list of entities being unloaded
      */
-    private void removeMobs(Chunk chunk) {
+    private void removeMobs(List<Entity> entities) {
         Map<String, Integer> count = new HashMap<String, Integer>();
-        for (Entity entity : chunk.getEntities()) {
+        for (Entity entity : entities) {
 
             // Constrain entities to be removed to limitable mobs, excluding villagers
             if (entity.isDead() || !EntityHelper.isLimitableMob(entity) || entity instanceof Villager) continue;
@@ -83,7 +85,7 @@ public class ChunkUnloadLimiter implements Listener {
     public void removeAllMobs() {
         for (World world : plugin.getServer().getWorlds()) {
             for (Chunk chunk : world.getLoadedChunks()) {
-                removeMobs(chunk);
+                removeMobs(Arrays.asList(chunk.getEntities()));
             }
         }
     }

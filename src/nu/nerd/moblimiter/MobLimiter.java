@@ -2,7 +2,7 @@ package nu.nerd.moblimiter;
 
 import nu.nerd.moblimiter.configuration.Configuration;
 import nu.nerd.moblimiter.limiters.AgeLimiter;
-import nu.nerd.moblimiter.limiters.ChunkUnloadLimiter;
+import nu.nerd.moblimiter.limiters.EntityUnloadLimiter;
 import nu.nerd.moblimiter.limiters.SpawnLimiter;
 import nu.nerd.moblimiter.logblock.LogBlockWrapper;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -13,7 +13,7 @@ public class MobLimiter extends JavaPlugin {
 
     public static MobLimiter instance;
     private Configuration configuration;
-    private ChunkUnloadLimiter chunkUnloadLimiter;
+    private EntityUnloadLimiter chunkUnloadLimiter;
     private AgeLimiter ageLimiter;
     private LogBlockWrapper logBlock;
 
@@ -21,7 +21,7 @@ public class MobLimiter extends JavaPlugin {
     public void onEnable() {
         MobLimiter.instance = this;
         configuration = new Configuration();
-        chunkUnloadLimiter = new ChunkUnloadLimiter();
+        chunkUnloadLimiter = new EntityUnloadLimiter();
         ageLimiter = new AgeLimiter();
         logBlock = new LogBlockWrapper();
         new SpawnLimiter();

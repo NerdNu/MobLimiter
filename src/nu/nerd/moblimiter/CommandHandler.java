@@ -106,9 +106,9 @@ public class CommandHandler implements CommandExecutor {
                     " it is configured:\n");
 
             msg.append(ChatColor.YELLOW);
-            msg.append("1. Chunk unload culling\n");
+            msg.append("1. Entity unload culling\n");
             msg.append(ChatColor.GOLD);
-            msg.append("Mobs are culled down to a defined maximum whenever a chunk unloads or the server restarts.\n");
+            msg.append("Mobs are culled down to a defined maximum whenever a cluster of entities unloads or the server restarts.\n");
 
             msg.append(ChatColor.YELLOW);
             msg.append("2. Real-time spawn limiting\n");
