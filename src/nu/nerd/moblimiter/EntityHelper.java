@@ -68,9 +68,8 @@ public class EntityHelper {
                 return true;
             }
         }
+        // Don't cull allays who are holding items
         if(entity.getType() == EntityType.ALLAY) {
-            Allay allay = (Allay) entity;
-            System.out.println(equipment.getItemInMainHand().getType());
             if(equipment.getItemInMainHand() != null && equipment.getItemInMainHand().getType() != Material.AIR) {
                 return true;
             }
