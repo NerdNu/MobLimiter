@@ -3,6 +3,7 @@ version: ${project.version}
 description: Control the mob population
 authors: ["Travis Watkins", "redwall_hp"]
 softdepend: ["LogBlock"]
+api-version: '1.20'
 
 main: nu.nerd.moblimiter.MobLimiter
 

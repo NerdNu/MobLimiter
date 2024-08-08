@@ -56,7 +56,7 @@ public class EntityHelper {
         }
 
         // Save the sponge!
-        if (entity.getType() == EntityType.GUARDIAN && ((Guardian)entity).isElder()) {
+        if (entity.getType() == EntityType.ELDER_GUARDIAN) {
             return true;
         }
 
@@ -65,6 +65,12 @@ public class EntityHelper {
         for (ItemStack armor : equipment.getArmorContents()) {
             // Unarmored mobs, even animals, spawn with 1xAIR as armor.
             if (armor != null && armor.getType() != Material.AIR) {
+                return true;
+            }
+        }
+        // Don't cull allays who are holding items
+        if(entity.getType() == EntityType.ALLAY) {
+            if(equipment.getItemInMainHand() != null && equipment.getItemInMainHand().getType() != Material.AIR) {
                 return true;
             }
         }
