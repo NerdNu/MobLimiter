@@ -1,11 +1,17 @@
 package nu.nerd.moblimiter;
 
+import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
 import nu.nerd.moblimiter.configuration.Configuration;
 import nu.nerd.moblimiter.limiters.AgeLimiter;
 import nu.nerd.moblimiter.limiters.EntityUnloadLimiter;
 import nu.nerd.moblimiter.limiters.SpawnLimiter;
+import nu.nerd.moblimiter.listeners.BreedingListener;
 import nu.nerd.moblimiter.logblock.LogBlockWrapper;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import java.util.logging.Logger;
 
 
 public class MobLimiter extends JavaPlugin {
@@ -47,6 +53,14 @@ public class MobLimiter extends JavaPlugin {
 
     public LogBlockWrapper getLogBlock() {
         return logBlock;
+    }
+
+    public static String locationToString(Location location) {
+        return String.format("X: %.2f Y: %.2f Z: %.2f World: %s",
+                location.getX(),
+                location.getY(),
+                location.getZ(),
+                location.getWorld().getName());
     }
 
 

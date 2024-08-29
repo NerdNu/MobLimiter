@@ -1,5 +1,6 @@
-package nu.nerd.moblimiter;
+package nu.nerd.moblimiter.listeners;
 
+import nu.nerd.moblimiter.MobLimiter;
 import org.bukkit.entity.Animals;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Tameable;
