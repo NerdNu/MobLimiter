@@ -43,7 +43,7 @@ public class EntityHelper {
     public static boolean isSpecialMob(LivingEntity entity) {
 
         // Keep mobs with custom names
-        if (entity.getCustomName() != null) {
+        if (entity.customName() != null) {
             return true;
         }
 
@@ -68,6 +68,7 @@ public class EntityHelper {
                 return true;
             }
         }
+
         // Don't cull allays who are holding items
         if(entity.getType() == EntityType.ALLAY) {
             if(equipment.getItemInMainHand() != null && equipment.getItemInMainHand().getType() != Material.AIR) {

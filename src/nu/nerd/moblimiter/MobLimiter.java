@@ -1,17 +1,15 @@
 package nu.nerd.moblimiter;
 
-import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
 import nu.nerd.moblimiter.configuration.Configuration;
 import nu.nerd.moblimiter.limiters.AgeLimiter;
 import nu.nerd.moblimiter.limiters.EntityUnloadLimiter;
 import nu.nerd.moblimiter.limiters.SpawnLimiter;
-import nu.nerd.moblimiter.listeners.BreedingListener;
+import nu.nerd.moblimiter.listeners.ClickEvents;
+import nu.nerd.moblimiter.listeners.EntityEvents;
 import nu.nerd.moblimiter.logblock.LogBlockWrapper;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.logging.Logger;
 
 
 public class MobLimiter extends JavaPlugin {
@@ -31,8 +29,10 @@ public class MobLimiter extends JavaPlugin {
         ageLimiter = new AgeLimiter();
         logBlock = new LogBlockWrapper();
         new SpawnLimiter();
-        new BreedingListener();
+        new ClickEvents();
+        new EntityEvents();
         new CommandHandler();
+        System.out.println(configuration.getSpawnEggs());
     }
 
 

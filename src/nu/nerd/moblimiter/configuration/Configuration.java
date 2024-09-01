@@ -2,12 +2,15 @@ package nu.nerd.moblimiter.configuration;
 
 
 import nu.nerd.moblimiter.MobLimiter;
+import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Sheep;
 
 import javax.naming.ConfigurationException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class Configuration {
 
@@ -21,6 +24,7 @@ public class Configuration {
     private boolean relativeAge;
     private ConfiguredDefaults defaults;
     private HashMap<String, ConfiguredMob> limits;
+    private List<Material> spawnEggs = new ArrayList<>();
 
 
     public Configuration() {
@@ -44,6 +48,8 @@ public class Configuration {
         this.logBlock = plugin.getConfig().getBoolean("logblock", false);
         this.relativeAge = plugin.getConfig().getBoolean("relative_age", false);
 
+        spawnEggs = new ArrayList<>();
+
         this.limits = new HashMap<String, ConfiguredMob>();
         ConfigurationSection mobLimits = plugin.getConfig().getConfigurationSection("limits");
         if (mobLimits != null) {
@@ -62,6 +68,11 @@ public class Configuration {
                 }
             }
         }
+
+        for(String egg : plugin.getConfig().getStringList("spawn_eggs")) {
+            spawnEggs.add(Material.getMaterial(egg));
+        }
+        System.out.println(spawnEggs);
 
     }
 
@@ -122,6 +133,12 @@ public class Configuration {
     public ConfiguredDefaults getDefaults() {
         return defaults;
     }
+
+    /**
+     * Gets a list of spawn eggs as defined in the config
+     * @return A list of spawn eggs as Strings
+     */
+    public List<Material> getSpawnEggs(){return spawnEggs;}
 
 
     /**

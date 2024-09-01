@@ -16,6 +16,7 @@ permissions:
       moblimiter.count: true
       moblimiter.limits: true
       moblimiter.check: true
+      moblimiter.spawners.bypass: true
   moblimiter.reload:
     description: Access to reload command
     default: op
@@ -27,6 +28,9 @@ permissions:
     default: op
   moblimiter.check:
     description: Access to check command
+    default: op
+  moblimiter.spawners.bypass:
+    description: Able to replace the mob in a spawner
     default: op
 
 commands:
