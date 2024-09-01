@@ -86,6 +86,17 @@ tampering with vanilla breeding behavior.
 
 This function only affects farm animals, and ignores other breedable entities like ocelots, wolves and villagers.
 
+### Prevent Spawner Modification
+
+MobLimiter blocks the modification of spawners through the use of spawn eggs. You can allow a player to modify them by
+granting the permission `moblimiter.spawners.bypass`. You can also customize which spawn eggs are blocked in the config
+under the `spawn_eggs` section.
+
+### Mob Age Locking
+
+You're able to lock the age of passive baby mobs by naming them with a nametag. These babies will never grow up, even
+if fed with food. If one of these mobs is killed, a log will be made with the person who killed it, the type of mob,
+location, and any features specific to that mob (coat colour, owner, etc.).
 
 ### Special Mobs
 
