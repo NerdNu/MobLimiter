@@ -29,7 +29,7 @@ public class SpawnLimiter implements Listener {
     public SpawnLimiter() {
         plugin = MobLimiter.instance;
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
-        reasons = new ArrayList<SpawnReason>();
+        reasons = new ArrayList<>();
         reasons.add(SpawnReason.BREEDING);
         reasons.add(SpawnReason.DEFAULT);
         reasons.add(SpawnReason.NATURAL);

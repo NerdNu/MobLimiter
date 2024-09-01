@@ -4,8 +4,12 @@ import nu.nerd.moblimiter.configuration.Configuration;
 import nu.nerd.moblimiter.limiters.AgeLimiter;
 import nu.nerd.moblimiter.limiters.EntityUnloadLimiter;
 import nu.nerd.moblimiter.limiters.SpawnLimiter;
+import nu.nerd.moblimiter.listeners.ClickEvents;
+import nu.nerd.moblimiter.listeners.EntityEvents;
 import nu.nerd.moblimiter.logblock.LogBlockWrapper;
+import org.bukkit.Location;
 import org.bukkit.plugin.java.JavaPlugin;
+
 
 
 public class MobLimiter extends JavaPlugin {
@@ -25,8 +29,10 @@ public class MobLimiter extends JavaPlugin {
         ageLimiter = new AgeLimiter();
         logBlock = new LogBlockWrapper();
         new SpawnLimiter();
-        new BreedingListener();
+        new ClickEvents();
+        new EntityEvents();
         new CommandHandler();
+        System.out.println(configuration.getSpawnEggs());
     }
 
 
@@ -47,6 +53,14 @@ public class MobLimiter extends JavaPlugin {
 
     public LogBlockWrapper getLogBlock() {
         return logBlock;
+    }
+
+    public static String locationToString(Location location) {
+        return String.format("X: %.2f Y: %.2f Z: %.2f World: %s",
+                location.getX(),
+                location.getY(),
+                location.getZ(),
+                location.getWorld().getName());
     }
 
 
