@@ -17,6 +17,7 @@ of extra mobs beyond the limit.
 
 * **Entity Unload:** Similar to version 2.0, the new entity-unload system checks for entities unloading within chunks and culls them down to numbers specified in the config, if desired.
 
+MobLimiter also offers spawner modification protection to prevent unwanted changes to the mobs a spawner produces, as well as mob age locking for when you want to keep your baby a baby forever.
 
 Configuration
 -------------
