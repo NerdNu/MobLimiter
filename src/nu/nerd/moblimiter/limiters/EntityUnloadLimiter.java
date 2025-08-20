@@ -68,7 +68,6 @@ public class EntityUnloadLimiter implements Listener {
             count.put(key, mobCount);
 
             if (cap > -1 && mobCount > cap) {
-                plugin.getLogBlock().logEntityRemoval(entity, 283);
                 entity.remove();
                 if (plugin.getConfiguration().debug()) {
                     plugin.getLogger().info("Chunk unload removed: " + EntityHelper.getMobDescription(entity));

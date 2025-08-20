@@ -6,7 +6,6 @@ import nu.nerd.moblimiter.limiters.EntityUnloadLimiter;
 import nu.nerd.moblimiter.limiters.SpawnLimiter;
 import nu.nerd.moblimiter.listeners.ClickEvents;
 import nu.nerd.moblimiter.listeners.EntityEvents;
-import nu.nerd.moblimiter.logblock.LogBlockWrapper;
 import org.bukkit.Location;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -19,7 +18,6 @@ public class MobLimiter extends JavaPlugin {
     private Configuration configuration;
     private EntityUnloadLimiter chunkUnloadLimiter;
     private AgeLimiter ageLimiter;
-    private LogBlockWrapper logBlock;
 
 
     public void onEnable() {
@@ -27,7 +25,6 @@ public class MobLimiter extends JavaPlugin {
         configuration = new Configuration();
         chunkUnloadLimiter = new EntityUnloadLimiter();
         ageLimiter = new AgeLimiter();
-        logBlock = new LogBlockWrapper();
         new SpawnLimiter();
         new ClickEvents();
         new EntityEvents();
@@ -48,11 +45,6 @@ public class MobLimiter extends JavaPlugin {
 
     public AgeLimiter getAgeLimiter() {
         return ageLimiter;
-    }
-
-
-    public LogBlockWrapper getLogBlock() {
-        return logBlock;
     }
 
     public static String locationToString(Location location) {
